@@ -264,21 +264,7 @@
       "use_all_providers": true
     },
     {
-      "tag": "✨ Gemini",
-      "type": "selector",
-      "outbounds": [
-        "⚡ 自动选择(排除香港)",
-        "⚡ 自动选择",
-        "🔰 节点选择",
-        "direct",
-        "🌀 手动切换1",
-        "🌀 手动切换2",
-        "🌀 手动切换3"
-      ],
-      "default": "⚡ 自动选择(排除香港)"
-    },
-    {
-      "tag": "🤖 AI工具",
+      "tag": "🤖 AI",
       "type": "selector",
       "outbounds": [
         "⚡ 自动选择(排除香港)",
@@ -628,8 +614,7 @@
         "outbound": "direct"
       },
       // 5. 代理规则
-      { "rule_set": "geosite-google-gemini", "outbound": "✨ Gemini" },
-      { "rule_set": "geosite-ai", "outbound": "🤖 AI工具" },
+      { "rule_set": "geosite-ai", "outbound": "🤖 AI" },
       { "rule_set": "geosite-youtube", "outbound": "▶️ 油管视频" },
       // Google 组 (含 Play 区域修复)
       {
@@ -735,14 +720,6 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geoip/google.srs",
-        "download_detour": "direct",
-        "update_interval": "3d"
-      },
-      {
-        "tag": "geosite-google-gemini",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/google-gemini.srs",
         "download_detour": "direct",
         "update_interval": "3d"
       },
