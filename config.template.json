@@ -9,7 +9,7 @@
       "external_controller": "127.0.0.1:9090",
       "external_ui": "zashboard",
       "external_ui_download_url": "https://ghfast.top/https://github.com/Zephyruso/zashboard/archive/refs/heads/gh-pages.zip",
-      "external_ui_download_detour": "🔰 节点选择",
+      "external_ui_download_detour": "🇨🇳 国内直连",
       "secret": "${CLASH_API_SECRET}",
       "default_mode": "rule"
     },
@@ -183,7 +183,7 @@
       "path": "./provider_1_cache.yaml",
       "update_interval": "12h",
       "user_agent": "clash.meta",
-      "download_detour": "direct",
+      "download_detour": "🇨🇳 国内直连",
       "health_check": {
         "enabled": true,
         "url": "http://cp.cloudflare.com/generate_204",
@@ -197,7 +197,7 @@
       "path": "./provider_2_cache.yaml",
       "update_interval": "12h",
       "user_agent": "clash.meta",
-      "download_detour": "direct",
+      "download_detour": "🇨🇳 国内直连",
       "health_check": {
         "enabled": true,
         "url": "http://cp.cloudflare.com/generate_204",
@@ -211,7 +211,7 @@
       "path": "./provider_3_cache.yaml",
       "update_interval": "12h",
       "user_agent": "clash.meta",
-      "download_detour": "direct",
+      "download_detour": "🇨🇳 国内直连",
       "health_check": {
         "enabled": true,
         "url": "http://cp.cloudflare.com/generate_204",
@@ -229,7 +229,7 @@
         "🌀 手动切换1",
         "🌀 手动切换2",
         "🌀 手动切换3",
-        "direct"
+        "🇨🇳 国内直连"
       ],
       "default": "⚡ 自动选择"
     },
@@ -269,7 +269,7 @@
       "outbounds": [
         "⚡ 自动选择(排除香港)",
         "🔰 节点选择",
-        "direct",
+        "🇨🇳 国内直连",
         "⚡ 自动选择",
         "🌀 手动切换1",
         "🌀 手动切换2",
@@ -282,7 +282,7 @@
       "type": "selector",
       "outbounds": [
         "🔰 节点选择",
-        "direct",
+        "🇨🇳 国内直连",
         "⚡ 自动选择",
         "⚡ 自动选择(排除香港)",
         "🌀 手动切换1",
@@ -295,7 +295,7 @@
       "type": "selector",
       "outbounds": [
         "🔰 节点选择",
-        "direct",
+        "🇨🇳 国内直连",
         "⚡ 自动选择",
         "⚡ 自动选择(排除香港)",
         "🌀 手动切换1",
@@ -308,7 +308,7 @@
       "type": "selector",
       "outbounds": [
         "🔰 节点选择",
-        "direct",
+        "🇨🇳 国内直连",
         "⚡ 自动选择",
         "⚡ 自动选择(排除香港)",
         "🌀 手动切换1",
@@ -321,7 +321,7 @@
       "type": "selector",
       "outbounds": [
         "🔰 节点选择",
-        "direct",
+        "🇨🇳 国内直连",
         "⚡ 自动选择",
         "⚡ 自动选择(排除香港)",
         "🌀 手动切换1",
@@ -335,7 +335,7 @@
       "outbounds": [
         "⚡ 自动选择(排除香港)",
         "🔰 节点选择",
-        "direct",
+        "🇨🇳 国内直连",
         "⚡ 自动选择",
         "🌀 手动切换1",
         "🌀 手动切换2",
@@ -347,7 +347,7 @@
       "type": "selector",
       "outbounds": [
         "🔰 节点选择",
-        "direct",
+        "🇨🇳 国内直连",
         "⚡ 自动选择",
         "⚡ 自动选择(排除香港)",
         "🌀 手动切换1",
@@ -360,7 +360,7 @@
       "type": "selector",
       "outbounds": [
         "🔰 节点选择",
-        "direct",
+        "🇨🇳 国内直连",
         "⚡ 自动选择",
         "⚡ 自动选择(排除香港)",
         "🌀 手动切换1",
@@ -373,7 +373,7 @@
       "type": "selector",
       "outbounds": [
         "🔰 节点选择",
-        "direct",
+        "🇨🇳 国内直连",
         "⚡ 自动选择",
         "⚡ 自动选择(排除香港)",
         "🌀 手动切换1",
@@ -414,7 +414,7 @@
       "interrupt_exist_connections": false
     },
     {
-      "tag": "direct",
+      "tag": "🇨🇳 国内直连",
       "type": "direct"
     }
   ],
@@ -455,7 +455,7 @@
           { "port": 123 },
           { "domain_suffix": [".lan"] }
         ],
-        "outbound": "direct"
+        "outbound": "🇨🇳 国内直连"
       },
 
       // --- 漏斗 Level 1: 急速层 (Lite + Manual) ---
@@ -478,7 +478,7 @@
           "ssh.github.com",
           "dl.google.com"
         ],
-        "outbound": "direct"
+        "outbound": "🇨🇳 国内直连"
       },
 
       // --- 漏斗 Level 1.5: Steam 专项策略 (Dogfight360 修正方案) ---
@@ -523,7 +523,7 @@
             ]
           }
         ],
-        "outbound": "direct"
+        "outbound": "🇨🇳 国内直连"
       },
       // C. Steam 商店/社区代理
       { "rule_set": "geosite-steam", "outbound": "🎮 Steam服务" },
@@ -531,13 +531,13 @@
       // 32KB，处理 CDN 和跨国公司中国区
       {
         "rule_set": "geosite-geolocation-cn",
-        "outbound": "direct"
+        "outbound": "🇨🇳 国内直连"
       },
       // --- 漏斗 Level 3: 覆盖层 (Full CN) ---
       // 443KB 大规则，捕捉所有长尾冷门域名
       {
         "rule_set": "geosite-cn-full",
-        "outbound": "direct"
+        "outbound": "🇨🇳 国内直连"
       },
 
       // 4. 桌面端白名单 (Win11 保留，Mobile 分支需通过变基移除)
@@ -611,7 +611,7 @@
           "vncviewer",
           "tvnviewer.exe"
         ],
-        "outbound": "direct"
+        "outbound": "🇨🇳 国内直连"
       },
       // 5. 代理规则
       { "rule_set": "geosite-ai", "outbound": "🤖 AI" },
@@ -659,7 +659,7 @@
 
       // --- 漏斗 Level 4: 物理层 (IP Fallback) ---
       // 84KB Full GeoIP，终极兜底
-      { "rule_set": "geoip-cn", "outbound": "direct" }
+      { "rule_set": "geoip-cn", "outbound": "🇨🇳 国内直连" }
     ],
     "rule_set": [
       // CN - Level 1: Lite (20KB)
@@ -668,7 +668,7 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo-lite/geosite/cn.srs",
-        "download_detour": "direct",
+        "download_detour": "🇨🇳 国内直连",
         "update_interval": "3d"
       },
       // CN - Level 2: Geolocation (32KB)
@@ -677,7 +677,7 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/geolocation-cn.srs",
-        "download_detour": "direct",
+        "download_detour": "🇨🇳 国内直连",
         "update_interval": "3d"
       },
       // CN - Level 3: Full (443KB)
@@ -686,7 +686,7 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/cn.srs",
-        "download_detour": "direct",
+        "download_detour": "🇨🇳 国内直连",
         "update_interval": "3d"
       },
       // CN - Level 4: GeoIP Full (84KB)
@@ -695,7 +695,7 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geoip/cn.srs",
-        "download_detour": "direct",
+        "download_detour": "🇨🇳 国内直连",
         "update_interval": "3d"
       },
       // Foreign - Standard/Full (Accuracy Priority)
@@ -704,7 +704,7 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/google.srs",
-        "download_detour": "direct",
+        "download_detour": "🇨🇳 国内直连",
         "update_interval": "3d"
       },
       {
@@ -712,7 +712,7 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/geolocation-!cn.srs",
-        "download_detour": "direct",
+        "download_detour": "🇨🇳 国内直连",
         "update_interval": "3d"
       },
       {
@@ -720,7 +720,7 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geoip/google.srs",
-        "download_detour": "direct",
+        "download_detour": "🇨🇳 国内直连",
         "update_interval": "3d"
       },
       {
@@ -728,28 +728,28 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/googlefcm.srs",
-        "download_detour": "direct"
+        "download_detour": "🇨🇳 国内直连"
       },
       {
         "tag": "geosite-google@cn",
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/google@cn.srs",
-        "download_detour": "direct"
+        "download_detour": "🇨🇳 国内直连"
       },
       {
         "tag": "geosite-google-play@cn",
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/google-play@cn.srs",
-        "download_detour": "direct"
+        "download_detour": "🇨🇳 国内直连"
       },
       {
         "tag": "geosite-youtube",
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/youtube.srs",
-        "download_detour": "direct",
+        "download_detour": "🇨🇳 国内直连",
         "update_interval": "3d"
       },
       {
@@ -757,7 +757,7 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/steam@cn.srs",
-        "download_detour": "direct",
+        "download_detour": "🇨🇳 国内直连",
         "update_interval": "3d"
       },
       {
@@ -765,7 +765,7 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/steam.srs",
-        "download_detour": "direct",
+        "download_detour": "🇨🇳 国内直连",
         "update_interval": "3d"
       },
       {
@@ -773,7 +773,7 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/category-ai-!cn.srs",
-        "download_detour": "direct",
+        "download_detour": "🇨🇳 国内直连",
         "update_interval": "3d"
       },
       {
@@ -781,7 +781,7 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/github.srs",
-        "download_detour": "direct",
+        "download_detour": "🇨🇳 国内直连",
         "update_interval": "3d"
       },
       {
@@ -789,7 +789,7 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/microsoft.srs",
-        "download_detour": "direct",
+        "download_detour": "🇨🇳 国内直连",
         "update_interval": "3d"
       },
       {
@@ -797,7 +797,7 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/category-games.srs",
-        "download_detour": "direct",
+        "download_detour": "🇨🇳 国内直连",
         "update_interval": "3d"
       },
       {
@@ -805,7 +805,7 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geoip/apple.srs",
-        "download_detour": "direct",
+        "download_detour": "🇨🇳 国内直连",
         "update_interval": "3d"
       },
       {
@@ -813,7 +813,7 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/apple.srs",
-        "download_detour": "direct",
+        "download_detour": "🇨🇳 国内直连",
         "update_interval": "3d"
       },
       {
@@ -821,7 +821,7 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geoip/telegram.srs",
-        "download_detour": "direct",
+        "download_detour": "🇨🇳 国内直连",
         "update_interval": "3d"
       },
       {
@@ -829,7 +829,7 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/telegram.srs",
-        "download_detour": "direct",
+        "download_detour": "🇨🇳 国内直连",
         "update_interval": "3d"
       },
       // Specific Optimization - Lite Versions for CN
@@ -838,7 +838,7 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/category-games@cn.srs",
-        "download_detour": "direct",
+        "download_detour": "🇨🇳 国内直连",
         "update_interval": "3d"
       },
       {
@@ -846,7 +846,7 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/microsoft@cn.srs",
-        "download_detour": "direct",
+        "download_detour": "🇨🇳 国内直连",
         "update_interval": "3d"
       },
       {
@@ -854,7 +854,7 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/apple@cn.srs",
-        "download_detour": "direct",
+        "download_detour": "🇨🇳 国内直连",
         "update_interval": "3d"
       }
     ]
