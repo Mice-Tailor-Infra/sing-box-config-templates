@@ -69,6 +69,39 @@
         ],
         "server": "local"
       },
+      // DNS 侧 Steam 策略 - 商店/社区 -> google，CM/CDN -> local
+      {
+        "type": "logical",
+        "mode": "or",
+        "rules": [
+          {
+            "domain": [
+              "steampowered.com",
+              "steamcommunity.com",
+              "steamgames.com"
+            ]
+          }
+        ],
+        "server": "google"
+      },
+      {
+        "type": "logical",
+        "mode": "or",
+        "rules": [
+          {
+            "domain": [
+              "cm.steampowered.com",
+              "steamserver.net",
+              "steamcontent.com",
+              "steamstatic.com"
+            ]
+          },
+          {
+            "rule_set": "geosite-steam@cn"
+          }
+        ],
+        "server": "local"
+      },
       // Google 组 (优先处理 Play 商店送中域名)
       {
         "type": "logical",
@@ -265,6 +298,25 @@
     },
     {
       "tag": "🎮 游戏服务",
+      "type": "selector",
+      "outbounds": [
+        "🔰 节点选择",
+        "direct",
+        "🇭🇰 香港",
+        "🇹🇼 台湾",
+        "🇯🇵 日本",
+        "🇰🇷 韩国",
+        "🇸🇬 狮城",
+        "🇺🇸 美国",
+        "⚡ 自动选择",
+        "⚡ 自动选择(排除香港)",
+        "🌀 手动切换1",
+        "🌀 手动切换2",
+        "🌀 手动切换3"
+      ]
+    },
+    {
+      "tag": "🎮 Steam服务",
       "type": "selector",
       "outbounds": [
         "🔰 节点选择",
@@ -667,6 +719,53 @@
         ],
         "outbound": "direct"
       },
+
+      // --- 漏斗 Level 1.5: Steam 专项策略 (Dogfight360 修正方案) ---
+      // 确保 IPCountry: CN，下载满速，商店秒开
+      {
+        "type": "logical",
+        "mode": "or",
+        "rules": [
+          {
+            "domain_suffix": [
+              "cm.steampowered.com",
+              "steamserver.net",
+              "steamcontent.com"
+            ]
+          },
+          { "rule_set": "geosite-steam@cn" },
+          {
+            "ip_cidr": [
+              "45.121.184.0/24",
+              "103.10.124.0/23",
+              "103.28.54.0/24",
+              "146.66.152.0/24",
+              "146.66.155.0/24",
+              "153.254.86.0/24",
+              "155.133.224.0/22",
+              "155.133.230.0/24",
+              "155.133.232.0/23",
+              "155.133.234.0/24",
+              "155.133.236.0/22",
+              "155.133.240.0/23",
+              "155.133.244.0/23",
+              "155.133.246.0/24",
+              "155.133.248.0/21",
+              "162.254.192.0/21",
+              "185.25.182.0/23",
+              "190.217.32.0/22",
+              "192.69.96.0/22",
+              "205.196.6.0/24",
+              "208.64.200.0/22",
+              "208.78.164.0/22",
+              "205.185.194.0/24"
+            ]
+          }
+        ],
+        "outbound": "direct"
+      },
+      // C. Steam 商店/社区代理
+      { "rule_set": "geosite-steam", "outbound": "🎮 Steam服务" },
       // --- 漏斗 Level 2: 地缘层 (Geolocation) ---
       // 32KB，处理 CDN 和跨国公司中国区
       {
@@ -872,6 +971,22 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/youtube.srs",
+        "download_detour": "direct",
+        "update_interval": "3d"
+      },
+      {
+        "tag": "geosite-steam@cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/steam@cn.srs",
+        "download_detour": "direct",
+        "update_interval": "3d"
+      },
+      {
+        "tag": "geosite-steam",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/steam.srs",
         "download_detour": "direct",
         "update_interval": "3d"
       },
