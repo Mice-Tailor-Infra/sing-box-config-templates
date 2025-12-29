@@ -55,6 +55,19 @@
         "server": "local"
       },
       {
+        "domain_suffix": [
+          "services.googleapis.cn",
+          "googleapis.cn",
+          "xn--ngstr-lra8j.com",
+          "xn--ngstr-cn-8za9o.com"
+        ],
+        "server": "google"
+      },
+      {
+        "rule_set": "geosite-google",
+        "server": "google"
+      },
+      {
         "rule_set": "geosite-geolocation-cn",
         "server": "local"
       },
@@ -661,6 +674,15 @@
           }
         ],
         "action": "reject"
+      },
+      {
+        "domain_suffix": [
+          "services.googleapis.cn",
+          "googleapis.cn",
+          "xn--ngstr-lra8j.com",
+          "xn--ngstr-cn-8za9o.com"
+        ],
+        "outbound": "🇬 谷歌服务"
       },
       {
         "rule_set": "geosite-geolocation-cn",
