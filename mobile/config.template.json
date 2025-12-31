@@ -36,6 +36,11 @@
         "tag": "fakeip",
         "type": "fakeip",
         "inet4_range": "198.18.0.0/15"
+      },
+      {
+        "tag": "fcm_hosts",
+        "type": "hosts",
+        "path": "/data/adb/fcm/hosts"
       }
     ],
     "rules": [
@@ -47,6 +52,12 @@
       {
         "clash_mode": "Direct",
         "server": "local"
+      },
+      // FCM 专项策略：强制从本地 hosts 文件解析，避免 Fake-IP 导致连接问题
+      {
+        "rule_set": "geosite-googlefcm",
+        "server": "fcm_hosts",
+        "disable_cache": true
       },
       {
         "clash_mode": "Global",
@@ -785,8 +796,8 @@
         "tag": "geosite-apple",
         "type": "remote",
         "format": "binary",
-        "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/apple.srs",
-        "download_detour": "🇨🇳 国内直连",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple.srs",
+        "download_detour": "⚡ 自动选择",
         "update_interval": "3d"
       },
       {
