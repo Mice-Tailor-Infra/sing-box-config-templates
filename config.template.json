@@ -211,7 +211,8 @@
         "com.oplus.ota", // 系统更新 (直连下载更快，且防止被识别为代理)
         "com.oplus.romupdate",
         "com.oplus.sau",
-        "com.oplus.sauhelper"
+        "com.oplus.sauhelper",
+        "com.coloros.translate" // ColorOS 翻译 (系统级语言服务)
       ],
       "platform": {
         "http_proxy": {
