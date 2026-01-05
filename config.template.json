@@ -42,9 +42,11 @@
         "tag": "fcm_hosts",
         "type": "hosts",
         "path": "/data/adb/fcm-hosts/hosts"
-      }
+      },
+      "{{DNS_SERVERS}}"
     ],
     "rules": [
+      "{{DNS_RULES_TOP}}",
       // 0. 核武级广告拦截 (最优先)
       {
         "rule_set": ["geosite-category-ads-all"],
@@ -116,6 +118,7 @@
         "server": "local"
       },
 
+      "{{DNS_RULES_MID}}",
       // 3. 国外/Google 流量 -> 强制 Fake-IP (修正点！)
       // 之前这里写的是 server: google，所以它返回了 Real IP。
       // 现在改为 server: fakeip，Google 就会变成 198.18.x.x
@@ -150,7 +153,8 @@
       {
         "query_type": ["A", "AAAA"],
         "server": "fakeip"
-      }
+      },
+      "{{DNS_RULES_BOTTOM}}"
     ],
     "final": "google",
     "strategy": "prefer_ipv6",
@@ -158,6 +162,7 @@
     "reverse_mapping": true
   },
   "inbounds": [
+    "{{INBOUNDS_TOP}}",
     {
       "type": "tun",
       "tag": "tun-in",
@@ -247,7 +252,8 @@
       "network": "udp",
       "listen": "127.0.0.1",
       "listen_port": 6053
-    }
+    },
+    "{{INBOUNDS_BOTTOM}}"
   ],
   "providers": [
     {
@@ -491,6 +497,7 @@
     "default_domain_resolver": "local",
     "final": "🔰 节点选择",
     "rules": [
+      "{{ROUTE_RULES_TOP}}",
       { "action": "sniff" },
       {
         "type": "logical",
@@ -664,11 +671,13 @@
 
       // 6. 境外兜底
       { "rule_set": "geosite-geolocation-!cn", "outbound": "🔰 节点选择" },
+      "{{ROUTE_RULES_MID}}",
 
 
       // --- 漏斗 Level 4: 物理层 (IP Fallback) ---
       // 84KB Full GeoIP，终极兜底
-      { "rule_set": "geoip-cn", "outbound": "🇨🇳 国内直连" }
+      { "rule_set": "geoip-cn", "outbound": "🇨🇳 国内直连" },
+      "{{ROUTE_RULES_BOTTOM}}"
     ],
     "rule_set": [
       // CN - Level 1: Lite (20KB)
@@ -866,7 +875,8 @@
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/category-ads-all.srs",
         "download_detour": "🇨🇳 国内直连",
         "update_interval": "3d"
-      }
+      },
+      "{{ROUTE_RULE_SETS}}"
     ]
   }
 }
