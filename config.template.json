@@ -166,7 +166,7 @@
       "auto_route": true,
       "auto_redirect": false,
       "strict_route": true,
-      "mtu": 9000,
+      "mtu": 1500,
       "route_exclude_address_set": ["geoip-cn"]
     },
     {
@@ -482,6 +482,14 @@
       },
       // --- 漏斗 Level 1: 急速层 (Lite + Manual) ---
       // 20KB 极小体积，命中 90% 日常流量，常驻 L1 Cache
+      // [FIX]: 强制 Antigravity/Chrome 下载走代理，避免国内 Google 缓存节点的连接重置问题
+      {
+        "domain": [
+          "edgedl.me.gvt1.com",
+          "dl.google.com"
+        ],
+        "outbound": "🇬 谷歌服务"
+      },
       {
         "rule_set": [
           "geosite-cn-lite",
@@ -498,8 +506,7 @@
           "0xc.cn",
           "ash.do",
           "ash6.com",
-          "ssh.github.com",
-          "dl.google.com"
+          "ssh.github.com"
         ],
         "outbound": "🇨🇳 国内直连"
       },
