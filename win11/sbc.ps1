@@ -118,14 +118,22 @@ switch ($Command) {
         
         # Binary update
         Write-Host "📦 Updating binaries via Scoop..." -ForegroundColor $Yellow
-        # Uninstall/Install to force update from local manifest
-        scoop uninstall sing-box-mice
-        scoop install $MANIFEST
+        # Only try update if we can
+        try {
+            scoop update sing-box-mice
+        } catch {
+            Write-Host "⚠️ Binary update skipped or failed. Using existing." -ForegroundColor $Yellow
+        }
 
         Load-Env
         Render-Config
         Restart-Service $SERVICE_ID
         Write-Host "✨ System updated and restarted." -ForegroundColor $Green
+    }
+    "render" {
+        Load-Env
+        Render-Config
+        Write-Host "✨ Configuration rendered." -ForegroundColor $Green
     }
     "install" {
         Ensure-Scoop
