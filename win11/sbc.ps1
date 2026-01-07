@@ -104,6 +104,14 @@ switch ($Command) {
         if (Test-Path "$CONF_DIR\sing-box.exe") {
              scoop shim sing-box # Force shim update sometimes helps
         }
+        
+        # Security/Sanity Check
+        if (Test-Path "$CONF_DIR\.git") {
+            Write-Host "⚠️  SECURITY WARNING: .git directory detected in runtime folder!" -ForegroundColor $Red
+            Write-Host "   Runtime folder: $CONF_DIR"
+            Write-Host "   This folder should NOT be a git repository."
+        }
+        
         sing-box check -c $TARGET_CONF -D $CONF_DIR
     }
     "update" {
