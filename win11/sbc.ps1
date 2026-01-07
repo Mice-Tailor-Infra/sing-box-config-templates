@@ -1,24 +1,28 @@
 <#
 .SYNOPSIS
-Mice System Tools - Sing-box Controller (Windows Edition + Scoop)
+Mice System Tools - Sing-box Controller (Windows Edition + Scoop + Git Separation)
 #>
 
 # Path Configuration
+$REPO_DIR = Join-Path $HOME "sing-box-repo"
 $CONF_DIR = Join-Path $HOME "sing-box-config"
-$BIN_DIR = Join-Path $HOME ".local/bin"
-$SCRIPT_NAME = "sbc.ps1"
+$BIN_LINK = Join-Path $HOME ".local/bin/sbc.ps1"
 
 # Derived Paths
 $ENV_FILE = Join-Path $CONF_DIR ".env"
-$TEMPLATE_FILE = Join-Path $CONF_DIR "config.template.json"
+$TEMPLATE_FILE = Join-Path $REPO_DIR "config.template.json"
 $TARGET_CONF = Join-Path $CONF_DIR "config.json"
-$MANIFEST = Join-Path $CONF_DIR "sing-box.json"
+$MANIFEST = Join-Path $REPO_DIR "sing-box.json"
 
 $SERVICE_ID = "sing-box"
 $EXECUTABLE = "sing-box-service.exe" # Copied from WinSW
 
-# Ensure correct working directory
-if (Test-Path $CONF_DIR) {
+# Ensure correct working directory (Runtime)
+if (-not (Test-Path $CONF_DIR)) {
+    # If config dir doesn't exist, we can't do much, but let's try to create it if we are initializing?
+    # Usually we expect setup to handle this.
+    # Write-Host "Config dir missing: $CONF_DIR"
+} else {
     Set-Location $CONF_DIR
 }
 
@@ -48,13 +52,16 @@ function Load-Env {
             }
         }
     } else {
-        Write-Host "⚠️ Warning: .env file not found." -ForegroundColor $Red
+        Write-Host "⚠️ Warning: .env file not found at $ENV_FILE" -ForegroundColor $Red
     }
 }
 
 function Render-Config {
     Write-Host "Evaluating configuration template..." -ForegroundColor $Yellow
-    if (-not (Test-Path $TEMPLATE_FILE)) { return }
+    if (-not (Test-Path $TEMPLATE_FILE)) { 
+        Write-Host "❌ Template not found at $TEMPLATE_FILE" -ForegroundColor $Red
+        return 
+    }
     $content = Get-Content $TEMPLATE_FILE -Raw
     $matches = [regex]::Matches($content, '\$\{([^}]+)\}')
     foreach ($match in $matches) {
@@ -82,30 +89,24 @@ switch ($Command) {
         else { Write-Host "Log file not found." -ForegroundColor $Red }
     }
     "check" {
-        scoop shim sing-box # Re-shim to ensure path
+        if (Test-Path "$CONF_DIR\sing-box.exe") {
+             scoop shim sing-box # Force shim update sometimes helps
+        }
         sing-box check -c $TARGET_CONF -D $CONF_DIR
     }
     "update" {
-        Write-Host "📡 Pulling scripts updates..." -ForegroundColor $Yellow
-        git pull
-        
-        # Self-update script
-        $RepoScript = Join-Path $CONF_DIR $SCRIPT_NAME
-        $BinScript = Join-Path $BIN_DIR $SCRIPT_NAME
-        if (Test-Path $RepoScript) {
-             if (-not (Test-Path $BIN_DIR)) { New-Item -ItemType Directory -Path $BIN_DIR | Out-Null }
-             Copy-Item $RepoScript $BinScript -Force
+        Write-Host "📡 Pulling scripts updates (Repo)..." -ForegroundColor $Yellow
+        if (Test-Path $REPO_DIR) {
+            Push-Location $REPO_DIR
+            git pull
+            Pop-Location
+        } else {
+            Write-Host "⚠️ Repo directory not found at $REPO_DIR" -ForegroundColor $Red
         }
-
-        Write-Host "📦 Updating binaries via Scoop..." -ForegroundColor $Yellow
-        # Update via manifest file requires re-install or specific handling if bucket non-existent
-        # Trying install first to handle upgrades if checkver detects change
-        # Note: 'scoop install' fails if already installed unless '-u' (update) is used? 
-        # No, scoop update for local file is tricky.
-        # Strategy: uninstall sing-box-mice -> install
-        # Or: check if version changed?
         
-        # Simplest consistent approach for this custom setup:
+        # Binary update
+        Write-Host "📦 Updating binaries via Scoop..." -ForegroundColor $Yellow
+        # Uninstall/Install to force update from local manifest
         scoop uninstall sing-box-mice
         scoop install $MANIFEST
 
@@ -123,7 +124,6 @@ switch ($Command) {
         # Install sing-box from local manifest
         if (Get-Command "sing-box" -ErrorAction SilentlyContinue) {
              Write-Host "sing-box already installed, checking version..."
-             # Force reinstall to ensure clean state
              scoop uninstall sing-box-mice
              scoop install $MANIFEST
         } else {
