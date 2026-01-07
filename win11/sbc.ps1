@@ -117,16 +117,19 @@ switch ($Command) {
     "install" {
         Ensure-Scoop
         Write-Host "📦 Installing Dependencies..." -ForegroundColor $Yellow
+        scoop config aria2-enabled false
         scoop install winsw
         
         # Install sing-box from local manifest
         if (Get-Command "sing-box" -ErrorAction SilentlyContinue) {
-             Write-Host "sing-box already installed, ensuring version..."
+             Write-Host "sing-box already installed, checking version..."
+             # Force reinstall to ensure clean state
              scoop uninstall sing-box-mice
              scoop install $MANIFEST
         } else {
              scoop install $MANIFEST
         }
+        scoop config aria2-enabled true 
 
         # Setup WinSW
         $WinSWPath = "$(scoop prefix winsw)\winsw.exe"
@@ -135,6 +138,14 @@ switch ($Command) {
              Write-Host "✅ WinSW Copied." -ForegroundColor $Green
         } else {
              Write-Host "❌ WinSW not found at $WinSWPath" -ForegroundColor $Red
+             exit 1
+        }
+        
+        # Ensure config file match
+        if (Test-Path "sing-box-service.xml") {
+             Write-Host "✅ Service config found." -ForegroundColor $Green
+        } else {
+             Write-Host "❌ sing-box-service.xml missing!" -ForegroundColor $Red
              exit 1
         }
 
