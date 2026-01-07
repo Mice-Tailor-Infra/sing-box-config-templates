@@ -165,7 +165,7 @@
       "auto_route": true,
       "auto_redirect": false,
       "strict_route": true,
-      "mtu": 1500,
+      "mtu": 1280,
       "route_exclude_address_set": ["geoip-cn"]
     },
     {
