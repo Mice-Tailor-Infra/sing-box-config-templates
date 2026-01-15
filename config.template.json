@@ -16,7 +16,7 @@
     "cache_file": {
       "enabled": true,
       "store_rdrc": true,
-      "store_fakeip": true
+      "store_fakeip": false
     }
   },
   "dns": {
@@ -31,12 +31,6 @@
         "tag": "local",
         "type": "https",
         "server": "223.5.5.5"
-      },
-      {
-        "tag": "fakeip",
-        "type": "fakeip",
-        "inet4_range": "198.18.0.0/15",
-        "inet6_range": "fdfe::/16"
       },
       {
         "tag": "fcm_hosts",
@@ -63,7 +57,7 @@
       {
         "clash_mode": "Global",
         "query_type": ["A", "AAAA"],
-        "server": "fakeip"
+        "server": "google"
       },
       // 1. Steam 专项 (Real-IP): 必须最优先，确保 CM/CDN 拿真实 IP 以维持 CN 身份
       // 这些域名必须走 local 解析，配合 route 里的直连规则
@@ -116,9 +110,8 @@
         "server": "local"
       },
 
-      // 3. 国外/Google 流量 -> 强制 Fake-IP (修正点！)
-      // 之前这里写的是 server: google，所以它返回了 Real IP。
-      // 现在改为 server: fakeip，Google 就会变成 198.18.x.x
+      // 3. 国外/Google 流量 -> 强制远程 DNS (Real-IP)
+      // 这些域名强制走 google 服务器解析，避免运营商 DNS 污染
       {
         "type": "logical",
         "mode": "or",
@@ -138,18 +131,12 @@
               "geosite-youtube",
               "geosite-ai",
               "geosite-telegram",
+              "geosite-googlefcm",
               "geosite-github"
             ]
           }
         ],
-        "server": "fakeip"
-      },
-
-      // 4. 剩下的所有 IPv4/IPv6 地址查询 -> 强制 Fake-IP
-      // 兜底规则：不仅是 notfoundme.com，任何没命中上面规则的域名都 FakeIP
-      {
-        "query_type": ["A", "AAAA"],
-        "server": "fakeip"
+        "server": "google"
       }
     ],
     "final": "google",
