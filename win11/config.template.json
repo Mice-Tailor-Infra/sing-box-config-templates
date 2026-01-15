@@ -162,6 +162,9 @@
       "auto_redirect": false,
       "strict_route": false,
       "mtu": 9000,
+      "route_exclude_address": [
+        "173.73.48.0/24"
+      ],
       "route_exclude_address_set": ["geoip-cn"]
     },
     {
