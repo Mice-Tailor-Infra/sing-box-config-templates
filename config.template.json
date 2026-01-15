@@ -97,6 +97,9 @@
               "ash.do",
               "ash6.com",
               "ssh.github.com"
+            ],
+            "domain_suffix": [
+              "youtune.tech"
             ]
           },
           {
@@ -499,6 +502,9 @@
           "ash.do",
           "ash6.com",
           "ssh.github.com"
+        ],
+        "domain_suffix": [
+          "youtune.tech"
         ],
         "outbound": "🇨🇳 国内直连"
       },
