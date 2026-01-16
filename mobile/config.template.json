@@ -354,6 +354,34 @@
       ]
     },
     {
+      "tag": "☁️ OneDrive",
+      "type": "selector",
+      "outbounds": [
+        "🇨🇳 国内直连",
+        "🔰 节点选择",
+        "⚡ 自动选择",
+        "⚡ 自动选择(排除香港)",
+        "🌀 手动切换1",
+        "🌀 手动切换2",
+        "🌀 手动切换3"
+      ],
+      "default": "🇨🇳 国内直连"
+    },
+    {
+      "tag": "🐱 GitHub",
+      "type": "selector",
+      "outbounds": [
+        "⚡ 自动选择",
+        "⚡ 自动选择(排除香港)",
+        "🔰 节点选择",
+        "🇨🇳 国内直连",
+        "🌀 手动切换1",
+        "🌀 手动切换2",
+        "🌀 手动切换3"
+      ],
+      "default": "⚡ 自动选择"
+    },
+    {
       "tag": "🎮 Steam服务",
       "type": "selector",
       "outbounds": [
@@ -656,8 +684,9 @@
         "rule_set": ["geoip-telegram", "geosite-telegram"],
         "outbound": "📲 电报消息"
       },
+      { "rule_set": "geosite-onedrive", "outbound": "☁️ OneDrive" },
+      { "rule_set": "geosite-github", "outbound": "🐱 GitHub" },
       { "rule_set": "geosite-microsoft", "outbound": "🪟 微软服务" },
-      { "rule_set": "geosite-github", "outbound": "🔰 节点选择" },
       { "rule_set": "geosite-category-games", "outbound": "🎮 游戏服务" },
       { "port": 22, "outbound": "🔑 SSH服务" },
 
