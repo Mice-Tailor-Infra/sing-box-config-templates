@@ -64,7 +64,8 @@
       {
         "clash_mode": "Global",
         "query_type": ["A", "AAAA"],
-        "server": "google"
+        "server": "google",
+        "strategy": "ipv4_only"
       },
       // 1. Steam 专项 (Real-IP): 必须最优先，确保 CM/CDN 拿真实 IP 以维持 CN 身份
       // 这些域名必须走 local 解析，配合 route 里的直连规则
@@ -153,7 +154,8 @@
             ]
           }
         ],
-        "server": "google"
+        "server": "google",
+        "strategy": "ipv4_only"
       }
     ],
     "final": "google",
