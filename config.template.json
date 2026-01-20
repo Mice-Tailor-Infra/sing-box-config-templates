@@ -159,7 +159,7 @@
       }
     ],
     "final": "google",
-    "strategy": "prefer_ipv6",
+    "strategy": "ipv4_only",
     "independent_cache": true,
     "reverse_mapping": true
   },
@@ -168,7 +168,7 @@
       "type": "tun",
       "tag": "tun-in",
       "stack": "mixed",
-      "address": ["172.19.0.1/30", "fdfe:ffff::1/126"],
+      "address": ["172.19.0.1/30"],
       "auto_route": true,
       "auto_redirect": true,
       "strict_route": false,
