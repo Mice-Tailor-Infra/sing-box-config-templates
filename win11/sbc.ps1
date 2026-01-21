@@ -88,7 +88,7 @@ function Render-Config {
 }
 
 function Sync-WslMtu {
-    $mtu = 9000
+    $mtu = 1500
     if (Test-Path $TARGET_CONF) {
         try {
             $json = Get-Content $TARGET_CONF -Raw | ConvertFrom-Json
