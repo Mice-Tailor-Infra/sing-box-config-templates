@@ -177,7 +177,7 @@
       "auto_route": true,
       "auto_redirect": false,
       "strict_route": false,
-      "mtu": 9000,
+      "mtu": 1500,
       "route_exclude_address": [
         "173.73.48.0/24"
       ],
