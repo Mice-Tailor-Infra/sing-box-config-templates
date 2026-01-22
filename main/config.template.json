@@ -467,7 +467,6 @@
     }
   ],
   "route": {
-    "domain_strategy": "ipv4_only",
     "auto_detect_interface": true,
     "default_domain_resolver": "local",
     "final": "🔰 节点选择",
