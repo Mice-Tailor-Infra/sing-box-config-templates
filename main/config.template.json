@@ -25,14 +25,14 @@
         "tag": "google",
         "type": "https",
         "server": "8.8.4.4",
-        "detour": "⚡ 自动选择",
+        "detour": "🔰 节点选择",
         "strategy": "ipv4_only"
       },
       {
         "tag": "google-onedrive",
         "type": "https",
         "server": "8.8.4.4",
-        "detour": "⚡ 自动选择",
+        "detour": "🔰 节点选择",
         "client_subnet": "114.114.114.114",
         "strategy": "ipv4_only"
       },
