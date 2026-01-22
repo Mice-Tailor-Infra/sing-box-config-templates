@@ -462,8 +462,7 @@
     },
     {
       "tag": "🇨🇳 国内直连",
-      "type": "direct",
-      "domain_strategy": "ipv4_only"
+      "type": "direct"
     }
   ],
   "route": {
