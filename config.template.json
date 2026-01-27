@@ -181,6 +181,11 @@
       // Win11 分支需改为 false
       "strict_route": true,
       "mtu": 9000,
+      "route_exclude_address": [
+        "192.168.43.0/24",
+        "192.168.49.0/24",
+        "172.20.10.0/24"
+      ],
       "route_exclude_address_set": ["geoip-cn"],
       "exclude_package": [
         // --- 1. 局域网协作与投屏 (必须直连，否则无法发现设备) ---
