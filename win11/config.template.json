@@ -25,19 +25,22 @@
         "tag": "google",
         "type": "https",
         "server": "8.8.4.4",
-        "detour": "⚡ 自动选择"
+        "detour": "🔰 节点选择",
+        "strategy": "ipv4_only"
       },
       {
         "tag": "google-onedrive",
         "type": "https",
         "server": "8.8.4.4",
-        "detour": "⚡ 自动选择",
-        "client_subnet": "114.114.114.114"
+        "detour": "🔰 节点选择",
+        "client_subnet": "114.114.114.114",
+        "strategy": "ipv4_only"
       },
       {
         "tag": "local",
         "type": "https",
-        "server": "223.5.5.5"
+        "server": "223.5.5.5",
+        "strategy": "ipv4_only"
       },
       {
         "tag": "fcm_hosts",
@@ -68,7 +71,7 @@
       },
       {
         "clash_mode": "Global",
-        "query_type": ["A", "AAAA"],
+        "query_type": ["A"],
         "server": "google",
         "strategy": "ipv4_only"
       },
@@ -106,7 +109,6 @@
           {
             "domain": [
               "beautifulcarrot.com",
-              "miceworld.top",
               "0xc.xyz",
               "0xc.cn",
               "ash.do",
@@ -141,6 +143,7 @@
         "rules": [
           {
             "domain": [
+              "miceworld.top",
               "services.googleapis.cn",
               "googleapis.cn",
               "xn--ngstr-lra8j.com",
@@ -543,7 +546,6 @@
         ],
         "domain": [
           "beautifulcarrot.com",
-          "miceworld.top",
           "0xc.xyz",
           "0xc.cn",
           "ash.do",
@@ -701,6 +703,7 @@
         "rules": [
           {
             "domain": [
+              "miceworld.top",
               "services.googleapis.cn",
               "googleapis.cn",
               "xn--ngstr-lra8j.com",
