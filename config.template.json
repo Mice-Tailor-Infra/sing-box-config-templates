@@ -104,7 +104,6 @@
           {
             "domain": [
               "beautifulcarrot.com",
-              "miceworld.top",
               "0xc.xyz",
               "0xc.cn",
               "ash.do",
@@ -139,6 +138,7 @@
         "rules": [
           {
             "domain": [
+              "miceworld.top",
               "services.googleapis.cn",
               "googleapis.cn",
               "xn--ngstr-lra8j.com",
@@ -534,7 +534,6 @@
         ],
         "domain": [
           "beautifulcarrot.com",
-          "miceworld.top",
           "0xc.xyz",
           "0xc.cn",
           "ash.do",
@@ -693,6 +692,7 @@
         "rules": [
           {
             "domain": [
+              "miceworld.top",
               "services.googleapis.cn",
               "googleapis.cn",
               "xn--ngstr-lra8j.com",
