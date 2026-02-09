@@ -194,6 +194,11 @@
       ]
     },
     {
+      "type": "mixed",
+      "listen": "127.0.0.1",
+      "listen_port": 7891
+    },
+    {
       "type": "direct",
       "tag": "dns-in",
       "network": "udp",
