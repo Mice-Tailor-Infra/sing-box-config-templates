@@ -1,0 +1,95 @@
+# ============================================================
+# Mihomo (Clash.Meta) 统一配置模板
+# 适用平台: Linux / Android / Windows (三端通用)
+# 设计理念: 不按服务分流，仅按国家/地区分组，极简规则
+# ============================================================
+
+# --- YAML Anchors (公共设置复用) ---
+pr: &pr
+  type: url-test
+  include-all-providers: true
+  url: "http://cp.cloudflare.com/generate_204"
+  interval: 180
+  tolerance: 50
+pp: &pp
+  type: http
+  interval: 86400
+  proxy: DIRECT
+  health-check:
+    enable: true
+    url: "http://cp.cloudflare.com/generate_204"
+    interval: 300
+    lazy: true
+
+# --- 基础设置 ---
+mixed-port: 7890
+mode: rule
+log-level: warning
+allow-lan: true
+unified-delay: true
+tcp-concurrent: true
+find-process-mode: strict
+global-client-fingerprint: chrome
+
+external-controller: 127.0.0.1:9090
+secret: "YOUR_CLASH_API_SECRET"
+
+geodata-mode: true
+geo-auto-update: true
+geo-update-interval: 72
+geox-url:
+  geoip: "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip-lite.dat"
+  geosite: "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat"
+  mmdb: "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country-lite.mmdb"
+
+# --- DNS 配置 (分流 DNS) ---
+dns:
+  enable: true
+  listen: :1053
+  ipv6: false
+  enhanced-mode: redir-host
+  nameserver:
+    - https://223.5.5.5/dns-query
+    - https://1.12.12.12/dns-query
+  proxy-server-nameserver:
+    - https://223.5.5.5/dns-query
+  nameserver-policy:
+    "geosite:cn,private": [https://223.5.5.5/dns-query, https://1.12.12.12/dns-query]
+    "geosite:geolocation-!cn": [https://8.8.4.4/dns-query, https://1.1.1.1/dns-query]
+
+# --- Proxy Providers (订阅源) ---
+proxy-providers:
+  provider1:
+    <<: *pp
+    url: "YOUR_SUB_URL_1"
+    path: ./providers/provider1.yaml
+
+  provider2:
+    <<: *pp
+    url: "YOUR_SUB_URL_2"
+    path: ./providers/provider2.yaml
+
+  provider3:
+    <<: *pp
+    url: "YOUR_SUB_URL_3"
+    path: ./providers/provider3.yaml
+
+# --- Proxy Groups (节点组) ---
+proxy-groups:
+  - {name: 🔰 节点选择, type: select, proxies: [⚡ 自动选择, 🇭🇰 香港, 🇹🇼 台湾, 🇯🇵 日本, 🇰🇷 韩国, 🇺🇸 美国, 🇸🇬 新加坡, 🌏 其他地区, DIRECT]}
+  - {name: ⚡ 自动选择, <<: *pr, exclude-filter: "(?i)剩余|流量|重置|到期|过期|订阅|官网|频道|群组|套餐|续费|客服|通报|失联|traffic|expire"}
+  - {name: 🇭🇰 香港, <<: *pr, filter: "(?i)港|hk|hongkong|hong kong|🇭🇰"}
+  - {name: 🇹🇼 台湾, <<: *pr, filter: "(?i)台|tw|taiwan|🇹🇼"}
+  - {name: 🇯🇵 日本, <<: *pr, filter: "(?i)日|jp|japan|🇯🇵"}
+  - {name: 🇰🇷 韩国, <<: *pr, filter: "(?i)韩|kr|korea|🇰🇷"}
+  - {name: 🇺🇸 美国, <<: *pr, filter: "(?i)美|us|united states|🇺🇸"}
+  - {name: 🇸🇬 新加坡, <<: *pr, filter: "(?i)新|sg|singapore|🇸🇬"}
+  - {name: 🌏 其他地区, <<: *pr, exclude-filter: "(?i)港|hk|hongkong|台|tw|taiwan|日|jp|japan|韩|kr|korea|美|us|united states|新|sg|singapore|🇭🇰|🇹🇼|🇯🇵|🇰🇷|🇺🇸|🇸🇬|剩余|流量|重置|到期|过期|订阅|官网|频道|群组|套餐|续费|客服|通报|失联|traffic|expire"}
+
+# --- Rules (极简规则) ---
+rules:
+  - GEOSITE,category-ads-all,REJECT
+  - GEOIP,private,DIRECT,no-resolve
+  - GEOSITE,cn,DIRECT
+  - GEOIP,cn,DIRECT,no-resolve
+  - MATCH,🔰 节点选择
