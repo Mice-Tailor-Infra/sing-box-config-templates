@@ -1,0 +1,128 @@
+# ============================================================
+# Mihomo (Clash.Meta) 统一配置模板
+# 适用平台: Linux / Android / Windows (三端通用)
+# 设计理念: 不按服务分流，仅按国家/地区分组，极简规则
+# ============================================================
+
+# --- YAML Anchors (公共设置复用) ---
+# 自动选择: url-test 选最快节点
+ut: &ut
+  type: url-test
+  include-all-providers: true
+  url: "http://cp.cloudflare.com/generate_204"
+  interval: 180
+  tolerance: 50
+# 负载均衡: consistent-hashing (同域名同节点, 不触发风控)
+lb: &lb
+  type: load-balance
+  strategy: consistent-hashing
+  include-all-providers: true
+  url: "http://cp.cloudflare.com/generate_204"
+  interval: 180
+pp: &pp
+  type: http
+  interval: 86400
+  proxy: DIRECT
+  health-check:
+    enable: true
+    url: "http://cp.cloudflare.com/generate_204"
+    interval: 300
+    lazy: true
+
+# --- 基础设置 ---
+mixed-port: 7890
+mode: rule
+log-level: warning
+allow-lan: true
+unified-delay: true
+tcp-concurrent: true
+find-process-mode: strict
+global-client-fingerprint: chrome
+
+external-controller: 127.0.0.1:9090
+secret: "YOUR_CLASH_API_SECRET"
+
+geodata-mode: true
+geo-auto-update: true
+geo-update-interval: 72
+geox-url:
+  geoip: "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.dat"
+  geosite: "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat"
+  mmdb: "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country.mmdb"
+
+# --- DNS 配置 (fake-ip + fallback 分流) ---
+dns:
+  enable: true
+  listen: :1053
+  ipv6: false
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-filter:
+    - "*.lan"
+    - "*.local"
+    - "localhost.ptlogin2.qq.com"
+  default-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+  nameserver:
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
+  proxy-server-nameserver:
+    - https://doh.pub/dns-query
+  nameserver-policy:
+    "geosite:cn,private": [https://doh.pub/dns-query, https://dns.alidns.com/dns-query]
+  fallback:
+    - tls://8.8.4.4
+    - tls://1.1.1.1
+  fallback-filter:
+    geoip: true
+    geoip-code: CN
+    geosite:
+      - gfw
+    ipcidr:
+      - 240.0.0.0/4
+
+# --- Proxy Providers (订阅源) ---
+proxy-providers:
+  provider1:
+    <<: *pp
+    url: "YOUR_SUB_URL_1"
+    path: ./providers/provider1.yaml
+
+  provider2:
+    <<: *pp
+    url: "YOUR_SUB_URL_2"
+    path: ./providers/provider2.yaml
+
+  provider3:
+    <<: *pp
+    url: "YOUR_SUB_URL_3"
+    path: ./providers/provider3.yaml
+
+# --- Proxy Groups (节点组) ---
+proxy-groups:
+  - {name: 🔰 节点选择, type: select, proxies: [⚡ 自动选择, 🇭🇰 香港自动, 🇭🇰 香港均衡, 🇹🇼 台湾自动, 🇹🇼 台湾均衡, 🇯🇵 日本自动, 🇯🇵 日本均衡, 🇰🇷 韩国自动, 🇰🇷 韩国均衡, 🇺🇸 美国自动, 🇺🇸 美国均衡, 🇸🇬 新加坡自动, 🇸🇬 新加坡均衡, 🌏 其他自动, 🌏 其他均衡, DIRECT]}
+  - {name: ⚡ 自动选择, <<: *ut, exclude-filter: "(?i)剩余|流量|重置|到期|过期|订阅|官网|频道|群组|套餐|续费|客服|通报|失联|traffic|expire"}
+  # --- 国家/地区组 (每国双模式: 自动选最快 + 负载均衡) ---
+  - {name: 🇭🇰 香港自动, <<: *ut, filter: "(?i)港|hk|hongkong|hong kong|🇭🇰"}
+  - {name: 🇭🇰 香港均衡, <<: *lb, filter: "(?i)港|hk|hongkong|hong kong|🇭🇰"}
+  - {name: 🇹🇼 台湾自动, <<: *ut, filter: "(?i)台|tw|taiwan|🇹🇼"}
+  - {name: 🇹🇼 台湾均衡, <<: *lb, filter: "(?i)台|tw|taiwan|🇹🇼"}
+  - {name: 🇯🇵 日本自动, <<: *ut, filter: "(?i)日|jp|japan|🇯🇵"}
+  - {name: 🇯🇵 日本均衡, <<: *lb, filter: "(?i)日|jp|japan|🇯🇵"}
+  - {name: 🇰🇷 韩国自动, <<: *ut, filter: "(?i)韩|kr|korea|🇰🇷"}
+  - {name: 🇰🇷 韩国均衡, <<: *lb, filter: "(?i)韩|kr|korea|🇰🇷"}
+  - {name: 🇺🇸 美国自动, <<: *ut, filter: "(?i)美|us|united states|🇺🇸"}
+  - {name: 🇺🇸 美国均衡, <<: *lb, filter: "(?i)美|us|united states|🇺🇸"}
+  - {name: 🇸🇬 新加坡自动, <<: *ut, filter: "(?i)新|sg|singapore|🇸🇬"}
+  - {name: 🇸🇬 新加坡均衡, <<: *lb, filter: "(?i)新|sg|singapore|🇸🇬"}
+  - {name: 🌏 其他自动, <<: *ut, exclude-filter: "(?i)港|hk|hongkong|台|tw|taiwan|日|jp|japan|韩|kr|korea|美|us|united states|新|sg|singapore|🇭🇰|🇹🇼|🇯🇵|🇰🇷|🇺🇸|🇸🇬|剩余|流量|重置|到期|过期|订阅|官网|频道|群组|套餐|续费|客服|通报|失联|traffic|expire"}
+  - {name: 🌏 其他均衡, <<: *lb, exclude-filter: "(?i)港|hk|hongkong|台|tw|taiwan|日|jp|japan|韩|kr|korea|美|us|united states|新|sg|singapore|🇭🇰|🇹🇼|🇯🇵|🇰🇷|🇺🇸|🇸🇬|剩余|流量|重置|到期|过期|订阅|官网|频道|群组|套餐|续费|客服|通报|失联|traffic|expire"}
+
+# --- Rules (极简规则) ---
+rules:
+  - GEOSITE,category-ads-all,REJECT
+  - GEOIP,private,DIRECT,no-resolve
+  - GEOSITE,cn,DIRECT
+  - GEOIP,cn,DIRECT,no-resolve
+  - MATCH,🔰 节点选择
