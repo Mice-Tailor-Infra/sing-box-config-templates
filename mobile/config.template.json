@@ -502,9 +502,7 @@
           "ash6.com",
           "dl.google.com"
         ],
-        "domain_suffix": [
-          "youtune.tech"
-        ],
+        "domain_suffix": ["youtune.tech"],
         "outbound": "🇨🇳 国内直连"
       },
       // 11. 外国域名 → 代理 (Android 无进程白名单，用 exclude_package 替代)
@@ -521,7 +519,7 @@
         "type": "remote",
         "format": "binary",
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/cn.srs",
-        "download_detour": "🇨🇳 国内直连",
+        "download_detour": "🔰 节点选择",
         "update_interval": "3d"
       },
       {
@@ -529,7 +527,7 @@
         "type": "remote",
         "format": "binary",
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geoip/cn.srs",
-        "download_detour": "🇨🇳 国内直连",
+        "download_detour": "🔰 节点选择",
         "update_interval": "3d"
       },
       {
@@ -537,7 +535,7 @@
         "type": "remote",
         "format": "binary",
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/geolocation-!cn.srs",
-        "download_detour": "🇨🇳 国内直连",
+        "download_detour": "🔰 节点选择",
         "update_interval": "3d"
       },
       {
@@ -545,7 +543,7 @@
         "type": "remote",
         "format": "binary",
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/steam@cn.srs",
-        "download_detour": "🇨🇳 国内直连",
+        "download_detour": "🔰 节点选择",
         "update_interval": "3d"
       },
       {
@@ -553,7 +551,7 @@
         "type": "remote",
         "format": "binary",
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/steam.srs",
-        "download_detour": "🇨🇳 国内直连",
+        "download_detour": "🔰 节点选择",
         "update_interval": "3d"
       },
       {
@@ -561,28 +559,28 @@
         "type": "remote",
         "format": "binary",
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/google@cn.srs",
-        "download_detour": "🇨🇳 国内直连"
+        "download_detour": "🔰 节点选择"
       },
       {
         "tag": "geosite-google-play@cn",
         "type": "remote",
         "format": "binary",
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/google-play@cn.srs",
-        "download_detour": "🇨🇳 国内直连"
+        "download_detour": "🔰 节点选择"
       },
       {
         "tag": "geosite-googlefcm",
         "type": "remote",
         "format": "binary",
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/googlefcm.srs",
-        "download_detour": "🇨🇳 国内直连"
+        "download_detour": "🔰 节点选择"
       },
       {
         "tag": "geosite-category-ads-all",
         "type": "remote",
         "format": "binary",
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/category-ads-all.srs",
-        "download_detour": "🇨🇳 国内直连",
+        "download_detour": "🔰 节点选择",
         "update_interval": "3d"
       },
       {
@@ -590,7 +588,7 @@
         "type": "remote",
         "format": "binary",
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/category-games@cn.srs",
-        "download_detour": "🇨🇳 国内直连",
+        "download_detour": "🔰 节点选择",
         "update_interval": "3d"
       },
       {
@@ -598,10 +596,9 @@
         "type": "remote",
         "format": "binary",
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/microsoft@cn.srs",
-        "download_detour": "🇨🇳 国内直连",
+        "download_detour": "🔰 节点选择",
         "update_interval": "3d"
-      },
-      "{{ROUTE_RULE_SETS}}"
+      }
     ]
   }
 }
