@@ -8,8 +8,8 @@
     "clash_api": {
       "external_controller": "127.0.0.1:9090",
       "external_ui": "zashboard",
-      "external_ui_download_url": "https://ghfast.top/https://github.com/Zephyruso/zashboard/archive/refs/heads/gh-pages.zip",
-      "external_ui_download_detour": "🇨🇳 国内直连",
+      "external_ui_download_url": "https://github.com/Zephyruso/zashboard/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "🔰 节点选择",
       "secret": "${CLASH_API_SECRET}",
       "default_mode": "rule"
     },
@@ -29,14 +29,6 @@
         "strategy": "ipv4_only"
       },
       {
-        "tag": "google-onedrive",
-        "type": "https",
-        "server": "8.8.4.4",
-        "detour": "🔰 节点选择",
-        "client_subnet": "114.114.114.114",
-        "strategy": "ipv4_only"
-      },
-      {
         "tag": "local",
         "type": "https",
         "server": "223.5.5.5",
@@ -49,29 +41,30 @@
       }
     ],
     "rules": [
-      // 0. 核武级广告拦截 (最优先)
+      // 1. 广告拦截
       {
         "rule_set": ["geosite-category-ads-all"],
         "action": "reject"
       },
+      // 2. Clash Direct 模式
       {
         "clash_mode": "Direct",
         "server": "local"
       },
-      // FCM 专项策略：强制从本地 hosts 文件解析，避免 Fake-IP 导致连接问题
+      // 3. FCM 专项: 强制从本地 hosts 文件解析
       {
         "rule_set": "geosite-googlefcm",
         "server": "fcm_hosts",
         "disable_cache": true
       },
+      // 4. Clash Global 模式
       {
         "clash_mode": "Global",
         "query_type": ["A"],
         "server": "google",
         "strategy": "ipv4_only"
       },
-      // 1. Steam 专项 (Real-IP): 必须最优先，确保 CM/CDN 拿真实 IP 以维持 CN 身份
-      // 这些域名必须走 local 解析，配合 route 里的直连规则
+      // 5. Steam CN 域名 → local (Real-IP，确保 IPCountry: CN)
       {
         "type": "logical",
         "mode": "or",
@@ -88,15 +81,7 @@
         ],
         "server": "local"
       },
-
-      // OneDrive 专项: 强制 Google 解析并指定 Subnet (114.114.114.114)
-      // 必须在 geosite-microsoft@cn / geosite-cn-full 之前匹配，否则会被 Local DNS 抢答
-      {
-        "rule_set": "geosite-onedrive",
-        "server": "google-onedrive"
-      },
-
-      // 2. 国内四级漏斗 (Real-IP): 确保国内域名解析出真实 IP，供 nftables/route 绕过内核
+      // 6. CN 域名 (单层) → local
       {
         "type": "logical",
         "mode": "or",
@@ -108,20 +93,16 @@
               "0xc.cn",
               "ash.do",
               "ash6.com",
-              "ssh.github.com"
+              "dl.google.com"
             ],
             "domain_suffix": [
               "youtune.tech"
             ]
           },
           {
-            // DNS 层面不需要漏斗，直接用全集，保证解析准确性
             "rule_set": [
-              "geosite-cn-full",
-              "geosite-geolocation-cn",
-              "geosite-cn-lite",
+              "geosite-cn",
               "geosite-microsoft@cn",
-              "geosite-apple@cn",
               "geosite-google@cn",
               "geosite-googlefcm"
             ]
@@ -129,34 +110,19 @@
         ],
         "server": "local"
       },
-
-      // 3. 国外/Google 流量 -> 强制远程 DNS (Real-IP)
-      // 这些域名强制走 google 服务器解析，避免运营商 DNS 污染
+      // 7. Google Play 区域修复域名 → google (走代理 DNS)
       {
-        "type": "logical",
-        "mode": "or",
-        "rules": [
-          {
-            "domain": [
-              "miceworld.top",
-              "services.googleapis.cn",
-              "googleapis.cn",
-              "xn--ngstr-lra8j.com",
-              "xn--ngstr-cn-8za9o.com"
-            ]
-          },
-          {
-            "rule_set": [
-              "geosite-google",
-              "geosite-geolocation-!cn",
-              "geosite-youtube",
-              "geosite-ai",
-              "geosite-telegram",
-              "geosite-googlefcm",
-              "geosite-github"
-            ]
-          }
+        "domain": [
+          "services.googleapis.cn",
+          "googleapis.cn",
+          "xn--ngstr-lra8j.com",
+          "xn--ngstr-cn-8za9o.com"
         ],
+        "server": "google"
+      },
+      // 8. 外国域名 → google
+      {
+        "rule_set": ["geosite-geolocation-!cn"],
         "server": "google",
         "strategy": "ipv4_only"
       }
@@ -249,201 +215,24 @@
       "tag": "🔰 节点选择",
       "type": "selector",
       "outbounds": [
-        "⚡ 自动选择",
-        "⚡ 自动选择(排除香港)",
-        "🌀 手动切换1",
-        "🌀 手动切换2",
-        "🌀 手动切换3",
+        "⚡ 联通移动优选",
+        "⚡ 电信优选",
+        "🇯🇵 大阪软银",
+        "📦 大流量",
+        "🌀 手动选择",
         "🇨🇳 国内直连"
       ],
-      "default": "⚡ 自动选择"
+      "default": "⚡ 联通移动优选"
     },
     {
-      "tag": "🌀 手动切换1",
-      "type": "selector",
-      "providers": [
-        "${PROVIDER_NAME_1}",
-        "${PROVIDER_NAME_2}",
-        "${PROVIDER_NAME_3}"
-      ],
-      "use_all_providers": true
-    },
-    {
-      "tag": "🌀 手动切换2",
-      "type": "selector",
-      "providers": [
-        "${PROVIDER_NAME_1}",
-        "${PROVIDER_NAME_2}",
-        "${PROVIDER_NAME_3}"
-      ],
-      "use_all_providers": true
-    },
-    {
-      "tag": "🌀 手动切换3",
-      "type": "selector",
-      "providers": [
-        "${PROVIDER_NAME_1}",
-        "${PROVIDER_NAME_2}",
-        "${PROVIDER_NAME_3}"
-      ],
-      "use_all_providers": true
-    },
-    {
-      "tag": "🤖 AI",
-      "type": "selector",
-      "outbounds": [
-        "⚡ 自动选择(排除香港)",
-        "🔰 节点选择",
-        "🇨🇳 国内直连",
-        "⚡ 自动选择",
-        "🌀 手动切换1",
-        "🌀 手动切换2",
-        "🌀 手动切换3"
-      ],
-      "default": "⚡ 自动选择(排除香港)"
-    },
-    {
-      "tag": "🎮 游戏服务",
-      "type": "selector",
-      "outbounds": [
-        "🔰 节点选择",
-        "🇨🇳 国内直连",
-        "⚡ 自动选择",
-        "⚡ 自动选择(排除香港)",
-        "🌀 手动切换1",
-        "🌀 手动切换2",
-        "🌀 手动切换3"
-      ]
-    },
-    {
-      "tag": "☁️ OneDrive",
-      "type": "selector",
-      "outbounds": [
-        "🇨🇳 国内直连",
-        "🔰 节点选择",
-        "⚡ 自动选择",
-        "⚡ 自动选择(排除香港)",
-        "🌀 手动切换1",
-        "🌀 手动切换2",
-        "🌀 手动切换3"
-      ],
-      "default": "🇨🇳 国内直连"
-    },
-    {
-      "tag": "🐱 GitHub",
-      "type": "selector",
-      "outbounds": [
-        "🔰 节点选择",
-        "⚡ 自动选择",
-        "⚡ 自动选择(排除香港)",
-        "🇨🇳 国内直连",
-        "🌀 手动切换1",
-        "🌀 手动切换2",
-        "🌀 手动切换3"
-      ],
-      "default": "⚡ 自动选择"
-    },
-    {
-      "tag": "🎮 Steam服务",
-      "type": "selector",
-      "outbounds": [
-        "🔰 节点选择",
-        "🇨🇳 国内直连",
-        "⚡ 自动选择",
-        "⚡ 自动选择(排除香港)",
-        "🌀 手动切换1",
-        "🌀 手动切换2",
-        "🌀 手动切换3"
-      ]
-    },
-    {
-      "tag": "🪟 微软服务",
-      "type": "selector",
-      "outbounds": [
-        "🔰 节点选择",
-        "🇨🇳 国内直连",
-        "⚡ 自动选择",
-        "⚡ 自动选择(排除香港)",
-        "🌀 手动切换1",
-        "🌀 手动切换2",
-        "🌀 手动切换3"
-      ]
-    },
-    {
-      "tag": "▶️ 油管视频",
-      "type": "selector",
-      "outbounds": [
-        "🔰 节点选择",
-        "🇨🇳 国内直连",
-        "⚡ 自动选择",
-        "⚡ 自动选择(排除香港)",
-        "🌀 手动切换1",
-        "🌀 手动切换2",
-        "🌀 手动切换3"
-      ]
-    },
-    {
-      "tag": "🇬 谷歌服务",
-      "type": "selector",
-      "outbounds": [
-        "⚡ 自动选择(排除香港)",
-        "🔰 节点选择",
-        "🇨🇳 国内直连",
-        "⚡ 自动选择",
-        "🌀 手动切换1",
-        "🌀 手动切换2",
-        "🌀 手动切换3"
-      ]
-    },
-    {
-      "tag": "🍎 苹果服务",
-      "type": "selector",
-      "outbounds": [
-        "🔰 节点选择",
-        "🇨🇳 国内直连",
-        "⚡ 自动选择",
-        "⚡ 自动选择(排除香港)",
-        "🌀 手动切换1",
-        "🌀 手动切换2",
-        "🌀 手动切换3"
-      ]
-    },
-    {
-      "tag": "📲 电报消息",
-      "type": "selector",
-      "outbounds": [
-        "🔰 节点选择",
-        "🇨🇳 国内直连",
-        "⚡ 自动选择",
-        "⚡ 自动选择(排除香港)",
-        "🌀 手动切换1",
-        "🌀 手动切换2",
-        "🌀 手动切换3"
-      ]
-    },
-    {
-      "tag": "🔑 SSH服务",
-      "type": "selector",
-      "outbounds": [
-        "🇨🇳 国内直连",
-        "🔰 节点选择",
-        "⚡ 自动选择",
-        "⚡ 自动选择(排除香港)",
-        "🌀 手动切换1",
-        "🌀 手动切换2",
-        "🌀 手动切换3"
-      ]
-    },
-    {
-      "tag": "⚡ 自动选择",
+      "tag": "⚡ 联通移动优选",
       "type": "urltest",
       "providers": [
         "${PROVIDER_NAME_1}",
         "${PROVIDER_NAME_2}",
         "${PROVIDER_NAME_3}"
       ],
-      "use_all_providers": true,
-      "exclude": "剩余|流量|重置|到期|过期|订阅|官网|频道|TG|Telegram|群组|更新|套餐|续费|客服|通报|失联",
+      "include": "(?i)s[12]\\b",
       "url": "http://cp.cloudflare.com/generate_204",
       "tolerance": 50,
       "interval": "3m",
@@ -451,20 +240,66 @@
       "interrupt_exist_connections": false
     },
     {
-      "tag": "⚡ 自动选择(排除香港)",
+      "tag": "⚡ 电信优选",
       "type": "urltest",
       "providers": [
         "${PROVIDER_NAME_1}",
         "${PROVIDER_NAME_2}",
         "${PROVIDER_NAME_3}"
       ],
-      "use_all_providers": true,
-      "exclude": "🇭🇰|香港|HK|HongKong|剩余|流量|重置|到期|过期|订阅|官网|频道|TG|Telegram|群组|更新|套餐|续费|客服|通报|失联",
+      "include": "(?i)s[35]\\b",
       "url": "http://cp.cloudflare.com/generate_204",
       "tolerance": 50,
       "interval": "3m",
       "idle_timeout": "30m",
       "interrupt_exist_connections": false
+    },
+    {
+      "tag": "🇯🇵 大阪软银",
+      "type": "urltest",
+      "providers": [
+        "${PROVIDER_NAME_1}",
+        "${PROVIDER_NAME_2}",
+        "${PROVIDER_NAME_3}"
+      ],
+      "include": "(?i)s4\\b",
+      "url": "http://cp.cloudflare.com/generate_204",
+      "tolerance": 50,
+      "interval": "3m",
+      "idle_timeout": "30m",
+      "interrupt_exist_connections": false
+    },
+    {
+      "tag": "📦 大流量",
+      "type": "selector",
+      "providers": [
+        "${PROVIDER_NAME_1}",
+        "${PROVIDER_NAME_2}",
+        "${PROVIDER_NAME_3}"
+      ],
+      "include": "(?i)s801\\b"
+    },
+    {
+      "tag": "🌀 手动选择",
+      "type": "selector",
+      "providers": [
+        "${PROVIDER_NAME_1}",
+        "${PROVIDER_NAME_2}",
+        "${PROVIDER_NAME_3}"
+      ],
+      "use_all_providers": true
+    },
+    {
+      "tag": "🎮 Steam商店",
+      "type": "selector",
+      "outbounds": [
+        "🔰 节点选择",
+        "⚡ 联通移动优选",
+        "⚡ 电信优选",
+        "🇯🇵 大阪软银",
+        "🌀 手动选择",
+        "🇨🇳 国内直连"
+      ]
     },
     {
       "tag": "🇨🇳 国内直连",
@@ -476,7 +311,9 @@
     "default_domain_resolver": "local",
     "final": "🔰 节点选择",
     "rules": [
+      // 1. 协议嗅探
       { "action": "sniff" },
+      // 2. DNS 劫持
       {
         "type": "logical",
         "mode": "or",
@@ -487,7 +324,7 @@
         ],
         "action": "hijack-dns"
       },
-      // 0. 基础直连 (Private/LAN)
+      // 3. 私有地址/LAN/NTP/BitTorrent 直连
       {
         "type": "logical",
         "mode": "or",
@@ -499,8 +336,7 @@
         ],
         "outbound": "🇨🇳 国内直连"
       },
-
-      // 0.5 模式覆盖 (最优先)
+      // 4. Clash 模式覆盖
       {
         "clash_mode": "Direct",
         "outbound": "🇨🇳 国内直连"
@@ -509,13 +345,12 @@
         "clash_mode": "Global",
         "outbound": "🔰 节点选择"
       },
-
-      // -1. 核武级广告拦截 (最优先)
+      // 5. 广告拦截
       {
         "rule_set": ["geosite-category-ads-all"],
         "action": "reject"
       },
-      // 0. 基础拦截 (Reject)
+      // 6. 协议封锁 (DoT/QUIC/STUN)
       {
         "type": "logical",
         "mode": "or",
@@ -526,34 +361,7 @@
         ],
         "action": "reject"
       },
-      // --- 漏斗 Level 1: 急速层 (Lite + Manual) ---
-      // 20KB 极小体积，命中 90% 日常流量，常驻 L1 Cache
-      {
-        "rule_set": [
-          "geosite-cn-lite",
-          "geosite-category-games@cn",
-          "geosite-microsoft@cn",
-          "geosite-apple@cn",
-          "geosite-google@cn",
-          "geosite-googlefcm"
-        ],
-        "domain": [
-          "beautifulcarrot.com",
-          "0xc.xyz",
-          "0xc.cn",
-          "ash.do",
-          "ash6.com",
-          "ssh.github.com",
-          "dl.google.com"
-        ],
-        "domain_suffix": [
-          "youtune.tech"
-        ],
-        "outbound": "🇨🇳 国内直连"
-      },
-
-      // --- 漏斗 Level 1.5: Steam 专项策略 (Dogfight360 修正方案) ---
-      // 确保 IPCountry: CN，下载满速，商店秒开
+      // 7. Steam CDN/下载 → 直连 (Dogfight360 方案)
       {
         "type": "logical",
         "mode": "or",
@@ -596,190 +404,98 @@
         ],
         "outbound": "🇨🇳 国内直连"
       },
-      // C. Steam 商店/社区代理
-      { "rule_set": "geosite-steam", "outbound": "🎮 Steam服务" },
-      // --- 漏斗 Level 2: 地缘层 (Geolocation) ---
-      // 32KB，处理 CDN 和跨国公司中国区
+      // 8. Steam 商店/社区 → 代理
+      { "rule_set": "geosite-steam", "outbound": "🎮 Steam商店" },
+      // 9. Google Play 区域修复 → 代理
       {
-        "rule_set": "geosite-geolocation-cn",
+        "domain": [
+          "googleapis.cn",
+          "services.googleapis.cn",
+          "xn--ngstr-lra8j.com",
+          "xn--ngstr-cn-8za9o.com"
+        ],
+        "rule_set": ["geosite-google-play@cn"],
+        "outbound": "🔰 节点选择"
+      },
+      // 10. CN 域名直连 (单层)
+      {
+        "rule_set": [
+          "geosite-cn",
+          "geosite-category-games@cn",
+          "geosite-microsoft@cn",
+          "geosite-google@cn",
+          "geosite-googlefcm"
+        ],
+        "domain": [
+          "beautifulcarrot.com",
+          "0xc.xyz",
+          "0xc.cn",
+          "ash.do",
+          "ash6.com",
+          "dl.google.com"
+        ],
+        "domain_suffix": [
+          "youtune.tech"
+        ],
         "outbound": "🇨🇳 国内直连"
       },
-      // --- 漏斗 Level 3: 覆盖层 (Full CN) ---
-      // 443KB 大规则，捕捉所有长尾冷门域名
-      {
-        "rule_set": "geosite-cn-full",
-        "outbound": "🇨🇳 国内直连"
-      },
-
-      // 4. 桌面端白名单 (Win11 保留，Mobile 分支需通过变基移除)
-      // 策略：剔除已弃用/臃肿软件，仅保留核心生产力与局域网协作工具
-      // 注意：不包含 Steam，以便通过域名分流实现“商店走节点，下载走直连”
+      // 11. 进程白名单 → 直连 (仅 Linux，去掉 .exe)
       {
         "process_name": [
-          // 腾讯系 (含 Linux 版微信/QQ)
-          "WeChat.exe",
+          // 腾讯系
           "wechat",
           "WeChat",
-          "QQ.exe",
           "linuxqq",
-          "TIM.exe",
-          "WXWork.exe",
           "wxwork",
           // 生产力工具
-          "DingTalk.exe",
           "dingtalk",
-          "Feishu.exe",
           "feishu",
-          "NeteaseCloudMusic.exe",
           "netease-cloud-music",
-          "QQMusic.exe",
           "qqmusic",
-          "Kugou.exe",
-          "KwMusic.exe",
-          "Bilibili.exe",
           "bilibili",
-          "QQLive.exe",
-          "Youku.exe",
-          "iQiyi.exe",
-          "WeMeet.exe",
           "wemeetapp",
-          // 办公、网盘与游戏辅助
-          "WPS.exe",
+          // 办公与网盘
           "wps",
-          "wpspdf.exe",
-          "et.exe",
-          "wpp.exe",
-          "BaiduNetdisk.exe",
           "baidunetdisk",
-          "AliyunPan.exe",
           "aliyunpan",
-          "Quark.exe",
           "Quark",
-          "WeGame.exe",
           "wegame",
-          "UU.exe",
-          "Heybox.exe",
-          // 局域网发现与核心同步 (KDE Connect 与 Localsend 核心保护)
-          "kdeconnectd.exe",
+          // 局域网发现与同步
           "kdeconnectd",
-          "kdeconnect-app.exe",
           "kdeconnect-app",
-          "kdeconnect-indicator.exe",
-          "kdeconnect-handler.exe",
-          "localsend_app.exe",
           "localsend_app",
-          "AnyDesk.exe",
           "anydesk",
-          "RustDesk.exe",
           "rustdesk",
-          // 系统远控组件与串流
-          "Moonlight.exe",
+          // 远控与串流
           "moonlight",
-          "streaming_client.exe",
-          "mstsc.exe",
           "remmina",
-          "vncviewer.exe",
           "vncviewer",
-          "tvnviewer.exe",
-          // 华为 VPN / HiDevLab 接入工具
-          "UniVPN.exe",
+          // 其他
           "UniVPN"
         ],
         "outbound": "🇨🇳 国内直连"
       },
-      // 5. 代理规则
-      { "rule_set": "geosite-ai", "outbound": "🤖 AI" },
-      { "rule_set": "geosite-youtube", "outbound": "▶️ 油管视频" },
-      // Google 组 (含 Play 区域修复)
-      {
-        "type": "logical",
-        "mode": "or",
-        "rules": [
-          {
-            "domain": [
-              "miceworld.top",
-              "services.googleapis.cn",
-              "googleapis.cn",
-              "xn--ngstr-lra8j.com",
-              "xn--ngstr-cn-8za9o.com"
-            ]
-          },
-          {
-            "rule_set": [
-              "geoip-google",
-              "geosite-google",
-              "geosite-google-play@cn"
-            ]
-          }
-        ],
-        "outbound": "🇬 谷歌服务"
-      },
-      {
-        "rule_set": "geosite-apple",
-        "outbound": "🍎 苹果服务"
-      },
-      {
-        "rule_set": ["geoip-telegram", "geosite-telegram"],
-        "outbound": "📲 电报消息"
-      },
-      { "rule_set": "geosite-onedrive", "outbound": "☁️ OneDrive" },
-      { "rule_set": "geosite-github", "outbound": "🐱 GitHub" },
-      { "rule_set": "geosite-microsoft", "outbound": "🪟 微软服务" },
-      { "rule_set": "geosite-category-games", "outbound": "🎮 游戏服务" },
-      { "port": 22, "outbound": "🔑 SSH服务" },
-
-      // 6. 境外兜底
+      // 12. 外国域名 → 代理
       { "rule_set": "geosite-geolocation-!cn", "outbound": "🔰 节点选择" },
-
-
-      // --- 漏斗 Level 4: 物理层 (IP Fallback) ---
-      // 84KB Full GeoIP，终极兜底
+      // 13. GeoIP CN 兜底 → 直连
       { "rule_set": "geoip-cn", "outbound": "🇨🇳 国内直连" }
+      // 14. final → 🔰 节点选择 (在 route.final 中定义)
     ],
     "rule_set": [
-      // CN - Level 1: Lite (20KB)
       {
-        "tag": "geosite-cn-lite",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo-lite/geosite/cn.srs",
-        "download_detour": "🇨🇳 国内直连",
-        "update_interval": "3d"
-      },
-      // CN - Level 2: Geolocation (32KB)
-      {
-        "tag": "geosite-geolocation-cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/geolocation-cn.srs",
-        "download_detour": "🇨🇳 国内直连",
-        "update_interval": "3d"
-      },
-      // CN - Level 3: Full (443KB)
-      {
-        "tag": "geosite-cn-full",
+        "tag": "geosite-cn",
         "type": "remote",
         "format": "binary",
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/cn.srs",
-        "download_detour": "🇨🇳 国内直连",
+        "download_detour": "🔰 节点选择",
         "update_interval": "3d"
       },
-      // CN - Level 4: GeoIP Full (84KB)
       {
         "tag": "geoip-cn",
         "type": "remote",
         "format": "binary",
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geoip/cn.srs",
-        "download_detour": "🇨🇳 国内直连",
-        "update_interval": "3d"
-      },
-      // Foreign - Standard/Full (Accuracy Priority)
-      {
-        "tag": "geosite-google",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/google.srs",
-        "download_detour": "🇨🇳 国内直连",
+        "download_detour": "🔰 节点选择",
         "update_interval": "3d"
       },
       {
@@ -787,44 +503,7 @@
         "type": "remote",
         "format": "binary",
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/geolocation-!cn.srs",
-        "download_detour": "🇨🇳 国内直连",
-        "update_interval": "3d"
-      },
-      {
-        "tag": "geoip-google",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geoip/google.srs",
-        "download_detour": "🇨🇳 国内直连",
-        "update_interval": "3d"
-      },
-      {
-        "tag": "geosite-googlefcm",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/googlefcm.srs",
-        "download_detour": "🇨🇳 国内直连"
-      },
-      {
-        "tag": "geosite-google@cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/google@cn.srs",
-        "download_detour": "🇨🇳 国内直连"
-      },
-      {
-        "tag": "geosite-google-play@cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/google-play@cn.srs",
-        "download_detour": "🇨🇳 国内直连"
-      },
-      {
-        "tag": "geosite-youtube",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/youtube.srs",
-        "download_detour": "🇨🇳 国内直连",
+        "download_detour": "🔰 节点选择",
         "update_interval": "3d"
       },
       {
@@ -832,7 +511,7 @@
         "type": "remote",
         "format": "binary",
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/steam@cn.srs",
-        "download_detour": "🇨🇳 国内直连",
+        "download_detour": "🔰 节点选择",
         "update_interval": "3d"
       },
       {
@@ -840,80 +519,44 @@
         "type": "remote",
         "format": "binary",
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/steam.srs",
-        "download_detour": "🇨🇳 国内直连",
+        "download_detour": "🔰 节点选择",
         "update_interval": "3d"
       },
       {
-        "tag": "geosite-ai",
+        "tag": "geosite-google@cn",
         "type": "remote",
         "format": "binary",
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/category-ai-!cn.srs",
-        "download_detour": "🇨🇳 国内直连",
-        "update_interval": "3d"
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/google@cn.srs",
+        "download_detour": "🔰 节点选择"
       },
       {
-        "tag": "geosite-github",
+        "tag": "geosite-google-play@cn",
         "type": "remote",
         "format": "binary",
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/github.srs",
-        "download_detour": "🇨🇳 国内直连",
-        "update_interval": "3d"
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/google-play@cn.srs",
+        "download_detour": "🔰 节点选择"
       },
       {
-        "tag": "geosite-microsoft",
+        "tag": "geosite-googlefcm",
         "type": "remote",
         "format": "binary",
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/microsoft.srs",
-        "download_detour": "🇨🇳 国内直连",
-        "update_interval": "3d"
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/googlefcm.srs",
+        "download_detour": "🔰 节点选择"
       },
       {
-        "tag": "geosite-onedrive",
+        "tag": "geosite-category-ads-all",
         "type": "remote",
         "format": "binary",
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/onedrive.srs",
-        "download_detour": "🇨🇳 国内直连",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/category-ads-all.srs",
+        "download_detour": "🔰 节点选择",
         "update_interval": "3d"
       },
-      {
-        "tag": "geosite-category-games",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/category-games.srs",
-        "download_detour": "🇨🇳 国内直连",
-        "update_interval": "3d"
-      },
-      {
-        "tag": "geosite-apple",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/apple.srs",
-        "download_detour": "⚡ 自动选择",
-        "update_interval": "3d"
-      },
-      {
-        "tag": "geoip-telegram",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geoip/telegram.srs",
-        "download_detour": "🇨🇳 国内直连",
-        "update_interval": "3d"
-      },
-      {
-        "tag": "geosite-telegram",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/telegram.srs",
-        "download_detour": "🇨🇳 国内直连",
-        "update_interval": "3d"
-      },
-      // Specific Optimization - Lite Versions for CN
       {
         "tag": "geosite-category-games@cn",
         "type": "remote",
         "format": "binary",
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/category-games@cn.srs",
-        "download_detour": "🇨🇳 国内直连",
+        "download_detour": "🔰 节点选择",
         "update_interval": "3d"
       },
       {
@@ -921,24 +564,7 @@
         "type": "remote",
         "format": "binary",
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/microsoft@cn.srs",
-        "download_detour": "🇨🇳 国内直连",
-        "update_interval": "3d"
-      },
-      {
-        "tag": "geosite-apple@cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/apple@cn.srs",
-        "download_detour": "🇨🇳 国内直连",
-        "update_interval": "3d"
-      },
-      // 去广告规则集
-      {
-        "tag": "geosite-category-ads-all",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/category-ads-all.srs",
-        "download_detour": "🇨🇳 国内直连",
+        "download_detour": "🔰 节点选择",
         "update_interval": "3d"
       }
     ]
