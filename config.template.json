@@ -286,7 +286,10 @@
         "⚡ 电信优选",
         "🇯🇵 大阪软银",
         "📦 大流量",
-        "🌀 手动选择",
+        "🌀 手动选择1",
+        "🌀 手动选择2",
+        "🌀 手动选择3",
+        "📲 电报消息",
         "🇨🇳 国内直连"
       ],
       "default": "⚡ 联通移动优选"
@@ -347,7 +350,7 @@
       "include": "(?i)s801\\b"
     },
     {
-      "tag": "🌀 手动选择",
+      "tag": "🌀 手动选择1",
       "type": "selector",
       "providers": [
         "${PROVIDER_NAME_1}",
@@ -357,6 +360,73 @@
       "use_all_providers": true
     },
     {
+      "tag": "🌀 手动选择2",
+      "type": "selector",
+      "providers": [
+        "${PROVIDER_NAME_1}",
+        "${PROVIDER_NAME_2}",
+        "${PROVIDER_NAME_3}"
+      ],
+      "use_all_providers": true
+    },
+    {
+      "tag": "🌀 手动选择3",
+      "type": "selector",
+      "providers": [
+        "${PROVIDER_NAME_1}",
+        "${PROVIDER_NAME_2}",
+        "${PROVIDER_NAME_3}"
+      ],
+      "use_all_providers": true
+    },
+    {
+      "tag": "📲 电报消息",
+      "type": "selector",
+      "outbounds": [
+        "⚡ 联通移动优选",
+        "⚡ 电信优选",
+        "🇯🇵 大阪软银",
+        "📦 大流量",
+        "🌀 手动选择1",
+        "🌀 手动选择2",
+        "🌀 手动选择3",
+        "🇨🇳 国内直连"
+      ],
+      "default": "⚡ 联通移动优选"
+    },
+    {
+      "tag": "🔞 18comic",
+      "type": "selector",
+      "outbounds": [
+        "🔰 节点选择",
+        "⚡ 联通移动优选",
+        "⚡ 电信优选",
+        "🇯🇵 大阪软银",
+        "📦 大流量",
+        "🌀 手动选择1",
+        "🌀 手动选择2",
+        "🌀 手动选择3",
+        "🇨🇳 国内直连"
+      ],
+      "default": "🔰 节点选择"
+    },
+    {
+      "tag": "🎮 dlsite",
+      "type": "selector",
+      "outbounds": [
+        "🔰 节点选择",
+        "⚡ 联通移动优选",
+        "⚡ 电信优选",
+        "🇯🇵 大阪软银",
+        "📦 大流量",
+        "🌀 手动选择1",
+        "🌀 手动选择2",
+        "🌀 手动选择3",
+        "🇨🇳 国内直连"
+      ],
+      "default": "🇯🇵 大阪软银"
+    },
+    {
       "tag": "🎮 Steam商店",
       "type": "selector",
       "outbounds": [
@@ -364,7 +434,9 @@
         "⚡ 联通移动优选",
         "⚡ 电信优选",
         "🇯🇵 大阪软银",
-        "🌀 手动选择",
+        "🌀 手动选择1",
+        "🌀 手动选择2",
+        "🌀 手动选择3",
         "🇨🇳 国内直连"
       ]
     },
@@ -474,7 +546,27 @@
       },
       // 8. Steam 商店/社区 → 代理
       { "rule_set": "geosite-steam", "outbound": "🎮 Steam商店" },
-      // 9. Google Play 区域修复 → 代理
+      // 9. Telegram 电报 → 代理
+      { "rule_set": ["geoip-telegram", "geosite-telegram"], "outbound": "📲 电报消息" },
+      // 10. 18comic 成人漫画 → 代理
+      {
+        "domain_suffix": [
+          "18comic.com",
+          "18comic.vip",
+          "18comic2.com",
+          "buka18.com"
+        ],
+        "outbound": "🔞 18comic"
+      },
+      // 11. dlsite 日本同人 → 代理
+      {
+        "domain_suffix": [
+          "dlsite.com",
+          "dlsite.jp"
+        ],
+        "outbound": "🎮 dlsite"
+      },
+      // 11. Google Play 区域修复 → 代理
       {
         "domain": [
           "googleapis.cn",
@@ -596,6 +688,22 @@
         "type": "remote",
         "format": "binary",
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/microsoft@cn.srs",
+        "download_detour": "🔰 节点选择",
+        "update_interval": "3d"
+      },
+      {
+        "tag": "geoip-telegram",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geoip/telegram.srs",
+        "download_detour": "🔰 节点选择",
+        "update_interval": "3d"
+      },
+      {
+        "tag": "geosite-telegram",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/telegram.srs",
         "download_detour": "🔰 节点选择",
         "update_interval": "3d"
       }
