@@ -236,7 +236,7 @@
         "${PROVIDER_NAME_3}"
       ],
       "include": "(?i)s[12]\\b",
-      "url": "http://cp.cloudflare.com/generate_204",
+      "url": "http://connectivitycheck.gstatic.com/generate_204",
       "tolerance": 50,
       "interval": "3m",
       "idle_timeout": "30m",
@@ -251,7 +251,7 @@
         "${PROVIDER_NAME_3}"
       ],
       "include": "(?i)s[35]\\b",
-      "url": "http://cp.cloudflare.com/generate_204",
+      "url": "http://connectivitycheck.gstatic.com/generate_204",
       "tolerance": 50,
       "interval": "3m",
       "idle_timeout": "30m",
@@ -266,7 +266,7 @@
         "${PROVIDER_NAME_3}"
       ],
       "include": "(?i)s4\\b",
-      "url": "http://cp.cloudflare.com/generate_204",
+      "url": "http://connectivitycheck.gstatic.com/generate_204",
       "tolerance": 50,
       "interval": "3m",
       "idle_timeout": "30m",
