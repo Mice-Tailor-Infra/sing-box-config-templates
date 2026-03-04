@@ -22,16 +22,22 @@
   "dns": {
     "servers": [
       {
+        "type": "local",
+        "tag": "local"
+      },
+      {
         "tag": "google",
         "type": "https",
         "server": "8.8.4.4",
+        "domain_resolver": "China",
         "detour": "🔰 节点选择",
         "strategy": "ipv4_only"
       },
       {
-        "tag": "local",
+        "tag": "China",
         "type": "https",
         "server": "223.5.5.5",
+        "domain_resolver": "local",
         "strategy": "ipv4_only"
       },
       {
@@ -49,7 +55,7 @@
       // 2. Clash Direct 模式
       {
         "clash_mode": "Direct",
-        "server": "local"
+        "server": "China"
       },
       // 3. FCM 专项: 强制从本地 hosts 文件解析
       {
@@ -64,7 +70,7 @@
         "server": "google",
         "strategy": "ipv4_only"
       },
-      // 5. Steam CN 域名 → local (Real-IP，确保 IPCountry: CN)
+      // 5. Steam CN 域名 → China (Real-IP，确保 IPCountry: CN)
       {
         "type": "logical",
         "mode": "or",
@@ -79,9 +85,9 @@
           },
           { "rule_set": "geosite-steam@cn" }
         ],
-        "server": "local"
+        "server": "China"
       },
-      // 6. CN 域名 (单层) → local
+      // 6. CN 域名 (单层) → China
       {
         "type": "logical",
         "mode": "or",
@@ -95,9 +101,7 @@
               "ash6.com",
               "dl.google.com"
             ],
-            "domain_suffix": [
-              "youtune.tech"
-            ]
+            "domain_suffix": ["youtune.tech"]
           },
           {
             "rule_set": [
@@ -108,7 +112,7 @@
             ]
           }
         ],
-        "server": "local"
+        "server": "China"
       },
       // 7. Google Play 区域修复域名 → google (走代理 DNS)
       {
@@ -142,10 +146,7 @@
       "auto_redirect": true,
       "strict_route": false,
       "mtu": 9000,
-      "route_exclude_address": [
-        "173.73.48.0/24",
-        "10.42.0.0/24"
-      ],
+      "route_exclude_address": ["173.73.48.0/24", "10.42.0.0/24"],
       "route_exclude_address_set": ["geoip-cn"]
     },
     {
@@ -380,7 +381,7 @@
   ],
   "route": {
     "auto_detect_interface": true,
-    "default_domain_resolver": "local",
+    "default_domain_resolver": "China",
     "final": "🔰 节点选择",
     "rules": [
       // 1. 协议嗅探
@@ -479,7 +480,10 @@
       // 8. Steam 商店/社区 → 代理
       { "rule_set": "geosite-steam", "outbound": "🎮 Steam商店" },
       // 9. Telegram 电报 → 代理
-      { "rule_set": ["geoip-telegram", "geosite-telegram"], "outbound": "📲 电报消息" },
+      {
+        "rule_set": ["geoip-telegram", "geosite-telegram"],
+        "outbound": "📲 电报消息"
+      },
       // 10. 18comic 成人漫画 → 代理
       {
         "domain_suffix": [
@@ -492,10 +496,7 @@
       },
       // 11. dlsite 日本同人 → 代理
       {
-        "domain_suffix": [
-          "dlsite.com",
-          "dlsite.jp"
-        ],
+        "domain_suffix": ["dlsite.com", "dlsite.jp"],
         "outbound": "🎮 dlsite"
       },
       // 11. Google Play 区域修复 → 代理
@@ -526,9 +527,7 @@
           "ash6.com",
           "dl.google.com"
         ],
-        "domain_suffix": [
-          "youtune.tech"
-        ],
+        "domain_suffix": ["youtune.tech"],
         "outbound": "🇨🇳 国内直连"
       },
       // 11. 进程白名单 → 直连 (仅 Linux，去掉 .exe)
@@ -555,7 +554,7 @@
           // 局域网发现与同步
           "kdeconnectd",
           "kdeconnect-app",
-          "localsend_app",
+          "Chinasend_app",
           "anydesk",
           "rustdesk",
           // 远控与串流
