@@ -22,16 +22,22 @@
   "dns": {
     "servers": [
       {
+        "type": "local",
+        "tag": "local"
+      },
+      {
         "tag": "google",
         "type": "https",
         "server": "8.8.4.4",
+        "domain_resolver": "China",
         "detour": "🔰 节点选择",
         "strategy": "ipv4_only"
       },
       {
-        "tag": "local",
+        "tag": "China",
         "type": "https",
         "server": "223.5.5.5",
+        "domain_resolver": "local",
         "strategy": "ipv4_only"
       },
       {
@@ -51,7 +57,7 @@
       // 2. Clash Direct 模式
       {
         "clash_mode": "Direct",
-        "server": "local"
+        "server": "China"
       },
       // 3. FCM 专项: 强制从本地 hosts 文件解析
       {
@@ -66,7 +72,7 @@
         "server": "google",
         "strategy": "ipv4_only"
       },
-      // 5. Steam CN 域名 → local (Real-IP，确保 IPCountry: CN)
+      // 5. Steam CN 域名 → China (Real-IP，确保 IPCountry: CN)
       {
         "type": "logical",
         "mode": "or",
@@ -81,9 +87,9 @@
           },
           { "rule_set": "geosite-steam@cn" }
         ],
-        "server": "local"
+        "server": "China"
       },
-      // 6. CN 域名 (单层) → local
+      // 6. CN 域名 (单层) → China
       {
         "type": "logical",
         "mode": "or",
@@ -110,7 +116,7 @@
             ]
           }
         ],
-        "server": "local"
+        "server": "China"
       },
       "{{DNS_RULES_MID}}",
       // 7. Google Play 区域修复域名 → google (走代理 DNS)
@@ -447,7 +453,7 @@
   ],
   "route": {
     "auto_detect_interface": true,
-    "default_domain_resolver": "local",
+    "default_domain_resolver": "China",
     "final": "🔰 节点选择",
     "rules": [
       "{{ROUTE_RULES_TOP}}",
