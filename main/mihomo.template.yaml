@@ -1,0 +1,400 @@
+# ============================================================
+# Mihomo 统一配置模板
+# 策略约束:
+# - 不做国家分组
+# - 不做测速自动切换
+# - 只暴露 6 个单节点供手动选择
+# - 上层仅保留 Apple / Telegram / Google / AI / 18comic / dlsite / Steam 服务组
+# - 规则集与 sing-box 保持同仓库，仅从 MetaCubeX/meta-rules-dat 的 meta 分支拉取
+# ============================================================
+
+mixed-port: 7891
+allow-lan: true
+bind-address: "*"
+mode: rule
+log-level: info
+ipv6: false
+unified-delay: true
+tcp-concurrent: true
+find-process-mode: strict
+global-client-fingerprint: chrome
+
+external-controller: 127.0.0.1:9090
+secret: "${CLASH_API_SECRET}"
+
+profile:
+  store-selected: true
+  store-fake-ip: false
+
+dns:
+  enable: true
+  listen: 0.0.0.0:1053
+  ipv6: false
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-filter:
+    - "*.lan"
+    - "*.local"
+    - "localhost.ptlogin2.qq.com"
+  default-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+  nameserver:
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
+    - tls://8.8.4.4
+  proxy-server-nameserver:
+    - https://doh.pub/dns-query
+
+tun:
+  enable: true
+  stack: gvisor
+  auto-route: true
+  auto-detect-interface: true
+  dns-hijack:
+    - any:53
+    - tcp://any:53
+  strict-route: false
+  mtu: 9000
+  route-exclude-address:
+    - 173.73.48.0/24
+    - 10.42.0.0/24
+    - 150.50.11.22/32
+    - 150.50.13.11/32
+    - 150.50.13.13/32
+    - 175.11.5.2/32
+    - 175.13.1.2/32
+    - 175.13.1.3/32
+  # iOS 主用场景不做应用级排除；包名级排除属于 Android 能力。
+  # Linux 如需 tun 层排除，请改用 exclude-uid / exclude-uid-range。
+
+proxy-providers:
+  justmysocks:
+    type: http
+    url: "${SUB_URL_1}"
+    path: ./providers/justmysocks.yaml
+    interval: 43200
+    proxy: DIRECT
+    health-check:
+      enable: false
+
+proxy-groups:
+  - name: 🔰 节点选择
+    type: select
+    proxies:
+      - 🇯🇵 JP s4 Fast
+      - 🇳🇱 EU s5
+      - 🇺🇸 LA s3
+      - 🇺🇸 LA s2
+      - 🇺🇸 LA s1
+      - 📦 Bulk s801
+      - DIRECT
+
+  - name: 🇺🇸 LA s1
+    type: select
+    use:
+      - justmysocks
+    filter: "(?i)c62s1\\b"
+
+  - name: 🇺🇸 LA s2
+    type: select
+    use:
+      - justmysocks
+    filter: "(?i)c62s2\\b"
+
+  - name: 🇺🇸 LA s3
+    type: select
+    use:
+      - justmysocks
+    filter: "(?i)c62s3\\b"
+
+  - name: 🇯🇵 JP s4 Fast
+    type: select
+    use:
+      - justmysocks
+    filter: "(?i)c62s4\\b"
+
+  - name: 🇳🇱 EU s5
+    type: select
+    use:
+      - justmysocks
+    filter: "(?i)c62s5\\b"
+
+  - name: 📦 Bulk s801
+    type: select
+    use:
+      - justmysocks
+    filter: "(?i)c62s801\\b"
+
+  - &service_group
+    name: 🍎 Apple
+    type: select
+    proxies:
+      - 🔰 节点选择
+      - 🇯🇵 JP s4 Fast
+      - 🇳🇱 EU s5
+      - 🇺🇸 LA s3
+      - 🇺🇸 LA s2
+      - 🇺🇸 LA s1
+      - 📦 Bulk s801
+      - DIRECT
+
+  - <<: *service_group
+    name: 📲 Telegram
+
+  - <<: *service_group
+    name: 🔎 Google
+
+  - <<: *service_group
+    name: 🤖 AI
+
+  - <<: *service_group
+    name: 🔞 18comic
+
+  - <<: *service_group
+    name: 🎮 dlsite
+
+  - <<: *service_group
+    name: 🎮 Steam
+
+rule-providers:
+  ads:
+    type: http
+    behavior: domain
+    format: yaml
+    path: ./ruleset/ads.yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ads-all.yaml
+    interval: 259200
+
+  cn:
+    type: http
+    behavior: domain
+    format: yaml
+    path: ./ruleset/cn.yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cn.yaml
+    interval: 259200
+
+  geoip_cn:
+    type: http
+    behavior: ipcidr
+    format: yaml
+    path: ./ruleset/geoip_cn.yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/cn.yaml
+    interval: 259200
+
+  steam:
+    type: http
+    behavior: domain
+    format: yaml
+    path: ./ruleset/steam.yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/steam.yaml
+    interval: 259200
+
+  steam_cn:
+    type: http
+    behavior: domain
+    format: yaml
+    path: ./ruleset/steam_cn.yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/steam@cn.yaml
+    interval: 259200
+
+  telegram:
+    type: http
+    behavior: domain
+    format: yaml
+    path: ./ruleset/telegram.yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/telegram.yaml
+    interval: 259200
+
+  geoip_telegram:
+    type: http
+    behavior: ipcidr
+    format: yaml
+    path: ./ruleset/geoip_telegram.yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/telegram.yaml
+    interval: 259200
+
+  google:
+    type: http
+    behavior: domain
+    format: yaml
+    path: ./ruleset/google.yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google.yaml
+    interval: 259200
+
+  google_cn:
+    type: http
+    behavior: domain
+    format: yaml
+    path: ./ruleset/google_cn.yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google@cn.yaml
+    interval: 259200
+
+  google_play_cn:
+    type: http
+    behavior: domain
+    format: yaml
+    path: ./ruleset/google_play_cn.yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google-play@cn.yaml
+    interval: 259200
+
+  googlefcm:
+    type: http
+    behavior: domain
+    format: yaml
+    path: ./ruleset/googlefcm.yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/googlefcm.yaml
+    interval: 259200
+
+  openai:
+    type: http
+    behavior: domain
+    format: yaml
+    path: ./ruleset/openai.yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/openai.yaml
+    interval: 259200
+
+  anthropic:
+    type: http
+    behavior: domain
+    format: yaml
+    path: ./ruleset/anthropic.yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/anthropic.yaml
+    interval: 259200
+
+  apple:
+    type: http
+    behavior: domain
+    format: yaml
+    path: ./ruleset/apple.yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple.yaml
+    interval: 259200
+
+  category_games_cn:
+    type: http
+    behavior: domain
+    format: yaml
+    path: ./ruleset/category_games_cn.yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-games@cn.yaml
+    interval: 259200
+
+  microsoft_cn:
+    type: http
+    behavior: domain
+    format: yaml
+    path: ./ruleset/microsoft_cn.yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/microsoft@cn.yaml
+    interval: 259200
+
+rules:
+  - RULE-SET,ads,REJECT
+
+  - IP-CIDR,127.0.0.0/8,DIRECT,no-resolve
+  - IP-CIDR,10.0.0.0/8,DIRECT,no-resolve
+  - IP-CIDR,172.16.0.0/12,DIRECT,no-resolve
+  - IP-CIDR,192.168.0.0/16,DIRECT,no-resolve
+  - IP-CIDR,100.64.0.0/10,DIRECT,no-resolve
+  - DOMAIN-SUFFIX,lan,DIRECT
+  - DST-PORT,123,DIRECT
+
+  - DOMAIN-SUFFIX,cm.steampowered.com,DIRECT
+  - DOMAIN-SUFFIX,steamserver.net,DIRECT
+  - DOMAIN-SUFFIX,steamcontent.com,DIRECT
+  - RULE-SET,steam_cn,DIRECT
+  - IP-CIDR,45.121.184.0/24,DIRECT,no-resolve
+  - IP-CIDR,103.10.124.0/23,DIRECT,no-resolve
+  - IP-CIDR,103.28.54.0/24,DIRECT,no-resolve
+  - IP-CIDR,146.66.152.0/24,DIRECT,no-resolve
+  - IP-CIDR,146.66.155.0/24,DIRECT,no-resolve
+  - IP-CIDR,153.254.86.0/24,DIRECT,no-resolve
+  - IP-CIDR,155.133.224.0/22,DIRECT,no-resolve
+  - IP-CIDR,155.133.230.0/24,DIRECT,no-resolve
+  - IP-CIDR,155.133.232.0/23,DIRECT,no-resolve
+  - IP-CIDR,155.133.234.0/24,DIRECT,no-resolve
+  - IP-CIDR,155.133.236.0/22,DIRECT,no-resolve
+  - IP-CIDR,155.133.240.0/23,DIRECT,no-resolve
+  - IP-CIDR,155.133.244.0/23,DIRECT,no-resolve
+  - IP-CIDR,155.133.246.0/24,DIRECT,no-resolve
+  - IP-CIDR,155.133.248.0/21,DIRECT,no-resolve
+  - IP-CIDR,162.254.192.0/21,DIRECT,no-resolve
+  - IP-CIDR,185.25.182.0/23,DIRECT,no-resolve
+  - IP-CIDR,190.217.32.0/22,DIRECT,no-resolve
+  - IP-CIDR,192.69.96.0/22,DIRECT,no-resolve
+  - IP-CIDR,205.196.6.0/24,DIRECT,no-resolve
+  - IP-CIDR,208.64.200.0/22,DIRECT,no-resolve
+  - IP-CIDR,208.78.164.0/22,DIRECT,no-resolve
+  - IP-CIDR,205.185.194.0/24,DIRECT,no-resolve
+
+  - RULE-SET,steam,🎮 Steam
+  - RULE-SET,geoip_telegram,📲 Telegram,no-resolve
+  - RULE-SET,telegram,📲 Telegram
+  - DOMAIN-SUFFIX,18comic.com,🔞 18comic
+  - DOMAIN-SUFFIX,18comic.vip,🔞 18comic
+  - DOMAIN-SUFFIX,18comic2.com,🔞 18comic
+  - DOMAIN-SUFFIX,buka18.com,🔞 18comic
+  - DOMAIN-SUFFIX,dlsite.com,🎮 dlsite
+  - DOMAIN-SUFFIX,dlsite.jp,🎮 dlsite
+
+  - DOMAIN,alkalicore-pa.clients6.google.com,🤖 AI
+  - DOMAIN,alkalimakersuite-pa.clients6.google.com,🤖 AI
+  - DOMAIN,webchannel-alkalimakersuite-pa.clients6.google.com,🤖 AI
+  - DOMAIN,cloudaicompanion.googleapis.com,🤖 AI
+  - DOMAIN,cloudcode-pa.googleapis.com,🤖 AI
+  - DOMAIN,daily-cloudcode-pa.googleapis.com,🤖 AI
+  - DOMAIN,notebooklm-pa.googleapis.com,🤖 AI
+  - DOMAIN-SUFFIX,ai.google.dev,🤖 AI
+  - DOMAIN-SUFFIX,aistudio.google.com,🤖 AI
+  - DOMAIN-SUFFIX,gemini.google.com,🤖 AI
+  - DOMAIN-SUFFIX,notebooklm.google.com,🤖 AI
+  - RULE-SET,openai,🤖 AI
+  - RULE-SET,anthropic,🤖 AI
+
+  - RULE-SET,googlefcm,DIRECT
+  - DOMAIN,googleapis.cn,🔎 Google
+  - DOMAIN,services.googleapis.cn,🔎 Google
+  - DOMAIN,xn--ngstr-lra8j.com,🔎 Google
+  - DOMAIN,xn--ngstr-cn-8za9o.com,🔎 Google
+  - RULE-SET,google_play_cn,🔎 Google
+  - RULE-SET,google,🔎 Google
+
+  - RULE-SET,apple,🍎 Apple
+
+  - DOMAIN,beautifulcarrot.com,DIRECT
+  - DOMAIN,0xc.xyz,DIRECT
+  - DOMAIN,0xc.cn,DIRECT
+  - DOMAIN,ash.do,DIRECT
+  - DOMAIN,ash6.com,DIRECT
+  - DOMAIN,dl.google.com,DIRECT
+  - DOMAIN-SUFFIX,youtune.tech,DIRECT
+  - RULE-SET,google_cn,DIRECT
+  - RULE-SET,category_games_cn,DIRECT
+  - RULE-SET,microsoft_cn,DIRECT
+  - RULE-SET,cn,DIRECT
+  - RULE-SET,geoip_cn,DIRECT,no-resolve
+
+  - PROCESS-NAME,wechat,DIRECT
+  - PROCESS-NAME,WeChat,DIRECT
+  - PROCESS-NAME,linuxqq,DIRECT
+  - PROCESS-NAME,wxwork,DIRECT
+  - PROCESS-NAME,dingtalk,DIRECT
+  - PROCESS-NAME,feishu,DIRECT
+  - PROCESS-NAME,netease-cloud-music,DIRECT
+  - PROCESS-NAME,qqmusic,DIRECT
+  - PROCESS-NAME,bilibili,DIRECT
+  - PROCESS-NAME,wemeetapp,DIRECT
+  - PROCESS-NAME,wps,DIRECT
+  - PROCESS-NAME,baidunetdisk,DIRECT
+  - PROCESS-NAME,aliyunpan,DIRECT
+  - PROCESS-NAME,Quark,DIRECT
+  - PROCESS-NAME,wegame,DIRECT
+  - PROCESS-NAME,kdeconnectd,DIRECT
+  - PROCESS-NAME,kdeconnect-app,DIRECT
+  - PROCESS-NAME,Chinasend_app,DIRECT
+  - PROCESS-NAME,anydesk,DIRECT
+  - PROCESS-NAME,rustdesk,DIRECT
+  - PROCESS-NAME,moonlight,DIRECT
+  - PROCESS-NAME,remmina,DIRECT
+  - PROCESS-NAME,vncviewer,DIRECT
+  - PROCESS-NAME,UniVPN,DIRECT
+
+  - MATCH,🔰 节点选择
