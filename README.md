@@ -2,7 +2,7 @@
 
 [![Configuration](https://img.shields.io/badge/config-decoupled-blue)](https://github.com/Mice-Tailor-Infra/sing-box-config-templates)
 
-本项目是个人 **Sing-box** 跨平台配置文件的上游模板仓库。
+本项目是个人 **Sing-box / Mihomo** 配置文件的上游模板仓库。
 
 采用 **IaC (Infrastructure as Code)** 思想管理网络配置，通过分支策略适配不同硬件环境（Android/Linux/Windows），并实现了配置逻辑与敏感凭证的完全解耦。
 
@@ -20,9 +20,20 @@
   - `win11`: Windows 桌面端适配版，针对虚拟网卡特性关闭了不必要的重定向参数。
 
 - **路由逻辑工程化**
-  - **白名单防御机制**：在移动端采用激进的 `exclude_package` 策略，仅接管核心代理流量，物理规避国内应用、银行软件及系统组件的审计风险。
-  - **DNS 策略优化**：强制 `ipv4_only` 策略以解决复杂的双栈回退延迟，配合独立缓存机制提升解析效率。
-  - **多机场负载均衡**：预置三路订阅源的故障转移与自动择优策略。
+  - **单节点手选**：底层只暴露 `LA s1 / LA s2 / LA s3 / JP s4 Fast / EU s5 / Bulk s801` 六个原子节点，不做国家分组，也不做 `urltest` 自动切换。
+  - **服务组分层**：上层只保留 `Apple / Telegram / Google / AI / 18comic / dlsite / Steam` 七个服务组，默认继承 `🔰 节点选择`，需要时手工切换到指定节点。
+  - **规则源单一真源**：`sing-box` 使用 `MetaCubeX/meta-rules-dat` 的 `sing` 分支；`mihomo` 使用同仓库的 `meta` 分支，不混用别的规则仓库。
+
+## 当前模板
+
+- `config.template.json`
+  - `sing-box` 主模板。
+  - 保留 TUN、Steam CDN 直连、Google Play 区域修复、进程白名单等现有知识。
+- `mihomo.template.yaml`
+  - `mihomo/clash.meta` 模板。
+  - 节点命名、服务组语义与 `sing-box` 完全对齐。
+  - 以 iOS 使用场景为主，不迁移 `fcm.hosts` 方案，FCM 直接走直连规则。
+  - 不设计应用级排除；iOS 侧统一采用服务组分流。
 
 ## 🛠️ 使用指南
 
@@ -46,12 +57,24 @@
    # 加载环境变量并渲染
    set -a && source .env && set +a
    envsubst < config.template.json > config.json
+   envsubst < mihomo.template.yaml > mihomo.yaml
    ```
 
 3. 启动 Sing-box：
    ```bash
    sing-box run -c config.json
    ```
+
+4. 或启动 Mihomo：
+   ```bash
+   mihomo -f mihomo.yaml
+   ```
+
+## 订阅要求
+
+- 统一只保留一条上游订阅 `SUB_URL_1`。
+- `SUB_URL_1` 必须返回纯节点列表，不能夹带上游自带的 `proxy-groups` 和 `rules`。
+- 如果你继续使用订阅转换器，请把 `list=false` 改成 `list=true`。
 
 ## ⚠️ 免责声明
 
