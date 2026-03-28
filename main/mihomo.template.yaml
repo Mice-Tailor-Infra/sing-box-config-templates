@@ -73,7 +73,7 @@ proxy-providers:
     type: http
     url: "${SUB_URL_1}"
     path: ./providers/justmysocks.yaml
-    interval: 43200
+    interval: 10800
     proxy: DIRECT
     health-check:
       enable: false

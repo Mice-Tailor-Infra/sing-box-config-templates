@@ -177,7 +177,7 @@
       "type": "remote",
       "url": "${SUB_URL_1}",
       "path": "./provider_cache.yaml",
-      "update_interval": "12h",
+      "update_interval": "3h",
       "user_agent": "clash.meta",
       "download_detour": "🇨🇳 国内直连",
       "health_check": {
