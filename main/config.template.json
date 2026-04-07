@@ -90,7 +90,7 @@
               "ash6.com",
               "dl.google.com"
             ],
-            "domain_suffix": ["youtune.tech"]
+            "domain_suffix": ["youtune.tech", "yescode.cloud"]
           },
           {
             "rule_set": [
@@ -541,7 +541,7 @@
           "ash6.com",
           "dl.google.com"
         ],
-        "domain_suffix": ["youtune.tech"],
+        "domain_suffix": ["youtune.tech", "yescode.cloud"],
         "outbound": "🇨🇳 国内直连"
       },
       // 17. 进程白名单 → 直连 (仅 Linux)

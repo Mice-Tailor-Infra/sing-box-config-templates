@@ -367,6 +367,7 @@ rules:
   - DOMAIN,ash6.com,DIRECT
   - DOMAIN,dl.google.com,DIRECT
   - DOMAIN-SUFFIX,youtune.tech,DIRECT
+  - DOMAIN-SUFFIX,yescode.cloud,DIRECT
   - RULE-SET,google_cn,DIRECT
   - RULE-SET,category_games_cn,DIRECT
   - RULE-SET,microsoft_cn,DIRECT
