@@ -336,6 +336,11 @@ rules:
   - DOMAIN-SUFFIX,dlsite.com,🎮 dlsite
   - DOMAIN-SUFFIX,dlsite.jp,🎮 dlsite
 
+  - DOMAIN,api-s.zwenooo.link,DIRECT
+  - DOMAIN,ai.yescode.cloud,DIRECT
+  - DOMAIN-SUFFIX,ikuncode.cc,DIRECT
+  - DOMAIN,api.zwenooo.link,🤖 AI
+  - DOMAIN,codez.zwenooo.link,🤖 AI
   - DOMAIN,alkalicore-pa.clients6.google.com,🤖 AI
   - DOMAIN,alkalimakersuite-pa.clients6.google.com,🤖 AI
   - DOMAIN,webchannel-alkalimakersuite-pa.clients6.google.com,🤖 AI
