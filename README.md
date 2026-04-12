@@ -16,7 +16,7 @@
 - **多分支环境隔离**
 
   - `main`: 通用 Linux 生产环境配置，追求极致的路由稳定性。
-  - `macos`: macOS 桌面端适配版。默认使用 `127.0.0.1:7890` 的 localhost mixed 入站并自动写回系统代理，不启用 TUN。
+  - `macos`: macOS 桌面端适配版。默认启用 TUN，并保留 `127.0.0.1:7890` 的 localhost mixed 入站作为本机应用代理入口，不启用系统代理回写。
   - `mobile`: Android (ColorOS) 深度适配版。包含 **VoLTE/VoNR 物理隔离**（通过 `exclude_package`）、FCM 唤醒优化及针对移动端基带的功耗控制。
   - `win11`: Windows 桌面端适配版，针对虚拟网卡特性关闭了不必要的重定向参数。
 
@@ -29,7 +29,7 @@
 
 - `config.template.json`
   - `sing-box` 主模板。
-  - macOS 分支默认关闭 TUN，改用 `127.0.0.1:7890` mixed 入站 + `set_system_proxy`，不再暴露 `7891` 辅助端口。
+  - macOS 分支默认启用 TUN，保留 `127.0.0.1:7890` 的 localhost mixed 入站，不再暴露 `7891` 辅助端口，也不自动写系统代理。
   - 保留 Steam CDN 直连、Google Play 区域修复等现有知识。
 - `mihomo.template.yaml`
   - `mihomo/clash.meta` 模板。
@@ -67,6 +67,10 @@
    ```bash
    sing-box run -c config.json
    ```
+
+> **注意**
+> - macOS 分支的 TUN 变更需要**重启服务/重启 sing-box 进程**才能生效，不要把 Clash 风格的热重载假设套到 sing-box TUN 上。
+> - 若只想给单个应用手动走代理，可直接使用 `127.0.0.1:7890`，无需开启系统代理。
 
 4. 或启动 Mihomo：
    ```bash
