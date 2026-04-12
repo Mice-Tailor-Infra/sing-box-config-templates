@@ -168,7 +168,7 @@
       "tag": "dns-in",
       "network": "udp",
       "listen": "127.0.0.1",
-      "listen_port": 6053
+      "listen_port": 53
     }
   ],
   "providers": [
