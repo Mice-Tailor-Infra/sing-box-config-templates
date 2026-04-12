@@ -16,6 +16,7 @@
 - **多分支环境隔离**
 
   - `main`: 通用 Linux 生产环境配置，追求极致的路由稳定性。
+  - `macos`: macOS 桌面端适配版。默认使用 `127.0.0.1:7890` 的 localhost mixed 入站并自动写回系统代理，不启用 TUN。
   - `mobile`: Android (ColorOS) 深度适配版。包含 **VoLTE/VoNR 物理隔离**（通过 `exclude_package`）、FCM 唤醒优化及针对移动端基带的功耗控制。
   - `win11`: Windows 桌面端适配版，针对虚拟网卡特性关闭了不必要的重定向参数。
 
@@ -28,7 +29,8 @@
 
 - `config.template.json`
   - `sing-box` 主模板。
-  - 保留 TUN、Steam CDN 直连、Google Play 区域修复、进程白名单等现有知识。
+  - macOS 分支默认关闭 TUN，改用 `127.0.0.1:7890` mixed 入站 + `set_system_proxy`，不再暴露 `7891` 辅助端口。
+  - 保留 Steam CDN 直连、Google Play 区域修复等现有知识。
 - `mihomo.template.yaml`
   - `mihomo/clash.meta` 模板。
   - 节点命名、服务组语义与 `sing-box` 完全对齐。
@@ -48,6 +50,7 @@
    ```bash
    cp .env.example .env
    # 编辑 .env 填入您的真实订阅链接和密钥
+   # 注意：此文件会被 shell source，带空格/emoji 的值必须保留引号
    vim .env
    ```
 

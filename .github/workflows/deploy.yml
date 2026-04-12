@@ -1,7 +1,7 @@
 name: Deploy Multi-Branch Configs
 on:
   push:
-    branches: ["main", "mobile", "win11"]
+    branches: ["main", "macos", "mobile", "win11"]
 
 # === 全聚得排队锁 ===
 # 所有的分支共用同一个 group 名字 "pages-deploy"
